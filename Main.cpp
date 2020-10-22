@@ -1,6 +1,6 @@
 #include "Board.h"
 
-int main()
+int main(int argc, char* args[])
 {
 	auto board = Board(4, 4);
 	board.AddStones(false, 0, 0, 10);
