@@ -1,12 +1,18 @@
-#include "Board.h"
+#include "Game.h"
+//#include <SDL.h>
+//#include <spdlog/spdlog.h>
 
 int main(int argc, char* args[])
 {
-	auto board = Board(4, 4);
-	board.AddStones(false, 0, 0, 10);
-	board.AddStones(true, 3, 3, 10);
+	/*SDL_Window* window = nullptr;
+	SDL_Surface* screenSurface = nullptr;
+	if(SDL_Init(SDL_INIT_VIDEO) < 0)
+	{
+		spdlog::error("Failed to initilaize SDL2. SDL_Error:{0}", SDL_GetError());
+		return -1;
+	}*/
 
-	board.PrintBoardToConsole();
-
+	auto game = Game(4, 4);
+	game.Loop();
 	return 0;
 }
