@@ -9,16 +9,13 @@
 #include <string>
 //#include <SDL.h>
 
-Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), boardTexture(), currentPlayer(0)
-{
-	board.AddStones(false, 0, 0, 10);
-	board.AddStones(true, 3, 3, 10);
-
-	board.PrintBoardToConsole();
-}
+Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), boardTexture(), blackStoneTexture(), whiteStoneTexture(), currentPlayer(0) {}
 
 Game::~Game()
 {
+	boardTexture.Free();
+	blackStoneTexture.Free();
+	whiteStoneTexture.Free();
 	renderer.Free();
 	window.Free();
 }
@@ -41,6 +38,9 @@ bool Game::Init()
 
 	// Load up the board, stones, and font textures
 	boardTexture = Texture(renderer, "Board.png");
+	blackStoneTexture = Texture(renderer, "BlackStone.png");
+	whiteStoneTexture = Texture(renderer, "WhiteStone.png");
+
 	board = Board(&Sprite(boardTexture));
 	board.AddStones(false, 0, 0, 10);
 	board.AddStones(true, 3, 3, 10);
@@ -80,57 +80,6 @@ void Game::Loop()
 		}
 	}
 }
-
-//void Game::Loop()
-//{
-//	bool isRunning = true;
-//	int x, y, direction;
-//	std::string nextMove, currentPlayerName;
-//
-//	while(isRunning)
-//	{
-//		// TODO: ADD DIAGONAL DIRECTIONS -- FUCK
-//		/* CONSOLE INPUT
-//		*	Input should be of the form "xyd" where:
-//		*	- x is the x coordinate of the pieces to move
-//		*	- y is the y coordinate of the pieces to move
-//		*	- d is the direction to move the pieces (UDLR)
-//		*/
-//		currentPlayerName = (currentPlayer == 0) ? "Black" : "White";
-//		std::cout << "Enter move for " << currentPlayerName << ": ";
-//		std::cin >> nextMove;
-//		if (nextMove[0] == 'q' || nextMove[0] == 'Q') {
-//			isRunning = false;
-//		}
-//		else if (nextMove.length() != 3) {
-//			std::cout << "ERROR: Please enter a valid command." << std::endl;
-//		}
-//		else {
-//			// Parse and check input
-//			x = nextMove[0] - 48;
-//			y = nextMove[1] - 48;
-//			direction = nextMove[2];
-//			if (Game::CheckInput(x, y, direction) == 0) {
-//				// Move stones and print board
-//				Game::MoveStones(x, y, direction);
-//				board.PrintBoardToConsole();
-//
-//				// Change currentPlayer
-//				switch (currentPlayer) {
-//				case 0:
-//					currentPlayer = 1;
-//					break;
-//				case 1:
-//					currentPlayer = 0;
-//					break;
-//				}
-//			}
-//		}
-//		// Win condition checking
-//
-//		// Rendering
-//	}
-//}
 
 void Game::UpdateTick(float deltaTime)
 {
@@ -200,8 +149,32 @@ void Game::RenderTick(float deltaTime)
 	spriteBatch.Begin();
 
 	// All the sprite rendering happens here
-	spriteBatch.Draw(board.GetSprite(), Vector2::Zero);
-	board.PrintBoardToConsole();
+	spriteBatch.Draw(board.GetSprite(), Vector2::Zero, Color::White, 0, Vector2::Zero, Vector2::One, SpriteFlip::None, 0.25f);
+
+	// Draw the stones
+	for(auto y = 0; y < 4; y++)
+	{
+		for(auto x = 0; x < 4; x++)
+		{
+			auto whiteStoneCount = board.GetStoneCount(true, x, y);
+			auto blackStoneCount = board.GetStoneCount(false, x, y);
+
+			for(auto i = 0; i < whiteStoneCount; i++)
+			{
+				auto flipType = std::rand() % 3;
+				auto spriteFlip = flipType == 0 ? SpriteFlip::None : flipType == 1 ? SpriteFlip::Horizontal : SpriteFlip::Vertical;
+				auto position = Vector2((75 + (x * 144)) + (std::rand() % 64), (75 + (y * 144)) + (std::rand() % 64));
+				spriteBatch.Draw(Sprite(whiteStoneTexture), position, Color::White, 0, Vector2::Zero, Vector2::One, spriteFlip, 0.5f);
+			}
+			for(auto i = 0; i < blackStoneCount; i++)
+			{
+				auto flipType = std::rand() % 3;
+				auto spriteFlip = flipType == 0 ? SpriteFlip::None : flipType == 1 ? SpriteFlip::Horizontal : SpriteFlip::Vertical;
+				auto position = Vector2((75 + (x * 144)) + (std::rand() % 64), (75 + (y * 144)) + (std::rand() % 64));
+				spriteBatch.Draw(Sprite(blackStoneTexture), position, Color::White, 0, Vector2::Zero, Vector2::One, spriteFlip, 0.5f);
+			}
+		}
+	}
 
 	spriteBatch.End();
 	renderer.PresentScreen();

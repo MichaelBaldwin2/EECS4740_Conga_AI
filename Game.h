@@ -15,6 +15,8 @@ private:
 	Renderer renderer;
 	SpriteBatch spriteBatch;
 	Texture boardTexture;
+	Texture blackStoneTexture;
+	Texture whiteStoneTexture;
 	int currentPlayer;
 
 public:
