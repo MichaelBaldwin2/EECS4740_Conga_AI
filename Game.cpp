@@ -164,6 +164,7 @@ void Game::MoveStones(int x, int y, int direction) {
 			board.AddStones(white, x, y - 1, 1);
 			numStones--;
 			if (numStones >= 2) { board.AddStones(white, x, y - 2, 2); }
+			else { board.AddStones(white, x, y - 2, numStones); }
 			numStones -= 2;
 			if (numStones > 0) { board.AddStones(white, x, y - 3, numStones); }
 			break;
@@ -194,6 +195,7 @@ void Game::MoveStones(int x, int y, int direction) {
 			board.AddStones(white, x, y + 1, 1);
 			numStones--;
 			if (numStones >= 2) { board.AddStones(white, x, y + 2, 2); }
+			else { board.AddStones(white, x, y + 2, numStones); }
 			numStones -= 2;
 			if (numStones > 0) { board.AddStones(white, x, y + 3, numStones); }
 			break;
@@ -225,6 +227,7 @@ void Game::MoveStones(int x, int y, int direction) {
 			board.AddStones(white, x - 1, y, 1);
 			numStones--;
 			if (numStones >= 2) { board.AddStones(white, x - 2, y, 2); }
+			else { board.AddStones(white, x - 2, y, numStones); }
 			numStones -= 2;
 			if (numStones > 0) { board.AddStones(white, x - 3, y, numStones); }
 			break;
@@ -256,6 +259,7 @@ void Game::MoveStones(int x, int y, int direction) {
 			board.AddStones(white, x + 1, y, 1);
 			numStones--;
 			if (numStones >= 2) { board.AddStones(white, x + 2, y, 2); }
+			else { board.AddStones(white, x + 2, y, numStones); }
 			numStones -= 2;
 			if (numStones > 0) { board.AddStones(white, x + 3, y, numStones); }
 			break;
