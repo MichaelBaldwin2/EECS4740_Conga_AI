@@ -105,15 +105,19 @@ int Game::CheckInputDirection(int x, int y, int direction) {
 	bool white = !(currentPlayer == 0);
 	int validDirectionTest = -1;
 
+	// Up
 	if (direction == 85 || direction == 117) {
 		validDirectionTest = board.GetStoneCount(!white, x, y - 1);
 	}
+	// Down
 	else if (direction == 68 || direction == 100) {
 		validDirectionTest = board.GetStoneCount(!white, x, y + 1);
 	}
+	// Left
 	else if (direction == 76 || direction == 108) {
 		validDirectionTest = board.GetStoneCount(!white, x - 1, y);
 	}
+	// Right
 	else if (direction == 82 || direction == 114) {
 		validDirectionTest = board.GetStoneCount(!white, x + 1, y);
 	}
@@ -136,6 +140,7 @@ void Game::MoveStones(int x, int y, int direction) {
 	int numStones = board.RemoveStones(white, x, y);
 	int freeSpaces = 0;
 
+	// Up
 	if (direction == 85 || direction == 117) {
 		// Determine free spaces
 		for (int i = 1; i < 4; i++) {
@@ -166,6 +171,7 @@ void Game::MoveStones(int x, int y, int direction) {
 			break;
 		}
 	}
+	// Down
 	else if (direction == 68 || direction == 100) {
 		for (int i = 1; i < 4; i++) {
 			if (board.GetStoneCount(!white, x, y + i) == 0) {
@@ -195,6 +201,7 @@ void Game::MoveStones(int x, int y, int direction) {
 			break;
 		}
 	}
+	// Left
 	else if (direction == 76 || direction == 108) {
 		// Determine free spaces
 		for (int i = 1; i < 4; i++) {
@@ -225,6 +232,7 @@ void Game::MoveStones(int x, int y, int direction) {
 			break;
 		}
 	}
+	// Right
 	else if (direction == 82 || direction == 114) {
 		// Determine free spaces
 		for (int i = 1; i < 4; i++) {
