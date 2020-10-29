@@ -4,9 +4,7 @@
 #include <string>
 //#include <SDL.h>
 
-int currentPlayer = 0; // Start player is Black
-
-Game::Game(int boardWidth, int boardHeight) : board(boardWidth, boardHeight)
+Game::Game() : board(), currentPlayer(0)
 {
 	board.AddStones(false, 0, 0, 10);
 	board.AddStones(true, 3, 3, 10);
@@ -125,14 +123,14 @@ int Game::CheckInputDirection(int x, int y, int direction) {
 	switch (validDirectionTest) {
 	case -1:
 		return 1;
-		break;
 	case 0:
 		break;
 	default:
 		std::cout << "ERROR: That space contains the other player's stones." << std::endl;
 		return 1;
-		break;
 	}
+
+	return 0;
 }
 
 void Game::MoveStones(int x, int y, int direction) {

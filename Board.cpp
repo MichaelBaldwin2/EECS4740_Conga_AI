@@ -3,7 +3,17 @@
 #include <sstream>
 #include <vector>
 
-Board::Board(unsigned int boardWidth, unsigned int boardHeight) : boardWidth(boardWidth), boardHeight(boardHeight), whiteStoneCounts(boardWidth * boardHeight, 0), blackStoneCounts(boardWidth* boardHeight, 0) {}
+Board::Board() : whiteStoneCounts(), blackStoneCounts()
+{
+	for(auto y = 0; y < 4; y++)
+	{
+		for(auto x = 0; x < 4; x++)
+		{
+			whiteStoneCounts[x][y] = 0;
+			blackStoneCounts[x][y] = 0;
+		}
+	}
+}
 
 int Board::GetStoneCount(bool white, unsigned int x, unsigned int y)
 {
@@ -13,7 +23,7 @@ int Board::GetStoneCount(bool white, unsigned int x, unsigned int y)
 		return -1;
 	}
 
-	return white ? whiteStoneCounts[y * boardWidth + x] : blackStoneCounts[y * boardWidth + x];
+	return white ? whiteStoneCounts[y][x] : blackStoneCounts[y][x];
 }
 
 int Board::AddStones(bool white, unsigned int x, unsigned int y, unsigned int count)
@@ -24,7 +34,7 @@ int Board::AddStones(bool white, unsigned int x, unsigned int y, unsigned int co
 		return -1;
 	}
 
-	white ? whiteStoneCounts[y * boardWidth + x] += count : blackStoneCounts[y * boardWidth + x] += count;
+	white ? whiteStoneCounts[y][x] += count : blackStoneCounts[y][x] += count;
 	return GetStoneCount(white, x, y);
 }
 
@@ -37,17 +47,17 @@ int Board::RemoveStones(bool white, unsigned int x, unsigned int y)
 	}
 
 	auto stoneCount = GetStoneCount(white, x, y);
-	white ? whiteStoneCounts[y * boardWidth + x] = 0 : blackStoneCounts[y * boardWidth + x] = 0;
+	white ? whiteStoneCounts[y][x] = 0 : blackStoneCounts[y][x] = 0;
 	return stoneCount;
 }
 
 void Board::PrintBoardToConsole()
 {
-	for(auto y = 0; y < boardHeight; y++)
+	for(auto y = 0; y < 4; y++)
 	{
 		//auto stringBuilder = std::stringstream();
 		std::cout << "|";
-		for(auto x = 0; x < boardWidth; x++)
+		for(auto x = 0; x < 4; x++)
 		{
 			auto whiteCount = GetStoneCount(true, x, y);
 			auto blackCount = GetStoneCount(false, x, y);
@@ -88,5 +98,5 @@ void Board::PrintBoardToConsole()
 
 bool Board::CheckBounds(unsigned int x, unsigned int y)
 {
-	return x >= boardWidth || y >= boardHeight;
+	return x >= 4 || y >= 4;
 }

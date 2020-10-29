@@ -12,7 +12,7 @@ int main(int argc, char* args[])
 		return -1;
 	}*/
 
-	auto game = Game(4, 4);
+	auto game = Game();
 	game.Loop();
 	return 0;
 }

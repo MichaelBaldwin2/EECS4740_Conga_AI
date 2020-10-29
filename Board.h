@@ -5,13 +5,11 @@
 class Board
 {
 private:
-	unsigned int boardWidth;
-	unsigned int boardHeight;
-	std::vector<unsigned int> whiteStoneCounts;
-	std::vector<unsigned int> blackStoneCounts;
+	unsigned int whiteStoneCounts[4][4];
+	unsigned int blackStoneCounts[4][4];
 
 public:
-	Board(unsigned int boardWidth = 4, unsigned int boardHeight = 4);
+	Board();
 	int GetStoneCount(bool white, unsigned int x, unsigned int y);
 	int AddStones(bool white, unsigned int x, unsigned int y, unsigned int count);
 	int RemoveStones(bool white, unsigned int x, unsigned int y);

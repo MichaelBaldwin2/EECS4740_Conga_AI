@@ -12,7 +12,7 @@ private:
 	void MoveStones(int x, int y, int direction);
 
 public:
-	Game(int boardWidth = 4, int boardHeight = 4);
+	Game();
 	void Loop();
 };
 
