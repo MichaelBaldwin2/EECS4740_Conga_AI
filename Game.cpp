@@ -41,7 +41,7 @@ void Game::Loop()
 			x = nextMove[0] - 48;
 			y = nextMove[1] - 48;
 			direction = nextMove[2];
-			if (Game::CheckInput(x, y, direction) == 0) {
+			if (Game::CheckInput(x, y, direction)) {
 				// Move stones and print board
 				Game::MoveStones(x, y, direction);
 				board.PrintBoardToConsole();
@@ -63,7 +63,7 @@ void Game::Loop()
 	}
 }
 
-int Game::CheckInput(int x, int y, int direction) {
+bool Game::CheckInput(int x, int y, int direction) {
 	/*
 	* Up:		85 or 117
 	* Down:		68 or 100
@@ -76,193 +76,120 @@ int Game::CheckInput(int x, int y, int direction) {
 
 	if (x < 0 || x > 3) {
 		std::cout << "ERROR: Please enter a valid x coordinate." << std::endl;
-		errorCount++;
+		return false;
 	}
-
 	if (y < 0 || y > 3) {
 		std::cout << "ERROR: Please enter a valid y coordinate." << std::endl;
-		errorCount++;
+		return false;
 	}
-
 	if (std::find(std::begin(validDirections), std::end(validDirections), direction) == std::end(validDirections)) {
 		std::cout << "ERROR: Please enter a valid direction." << std::endl;
-		errorCount++;
+		return false;
 	}
-
 	if (board.GetStoneCount(white, x, y) == 0) {
 		std::cout << "ERROR: Must select current player's stones." << std::endl;
-		errorCount++;
+		return false;
 	}
-
-	errorCount += Game::CheckInputDirection(x, y, direction);
-
-	return errorCount;
-}
-
-int Game::CheckInputDirection(int x, int y, int direction) {
-	bool white = !(currentPlayer == 0);
-	int validDirectionTest = -1;
-
 	// Up
 	if (direction == 85 || direction == 117) {
-		validDirectionTest = board.GetStoneCount(!white, x, y - 1);
+		return (board.GetStoneCount(!white, x, y - 1) == 0);
 	}
 	// Down
 	else if (direction == 68 || direction == 100) {
-		validDirectionTest = board.GetStoneCount(!white, x, y + 1);
+		return (board.GetStoneCount(!white, x, y + 1) == 0);
 	}
 	// Left
 	else if (direction == 76 || direction == 108) {
-		validDirectionTest = board.GetStoneCount(!white, x - 1, y);
+		return (board.GetStoneCount(!white, x - 1, y) == 0);
 	}
 	// Right
 	else if (direction == 82 || direction == 114) {
-		validDirectionTest = board.GetStoneCount(!white, x + 1, y);
+		return (board.GetStoneCount(!white, x + 1, y) == 0);
 	}
-
-	switch (validDirectionTest) {
-	case -1:
-		return 1;
-	case 0:
-		break;
-	default:
-		std::cout << "ERROR: That space contains the other player's stones." << std::endl;
-		return 1;
+	else {
+		return false;
 	}
-
-	return 0;
 }
 
 void Game::MoveStones(int x, int y, int direction) {
 	bool white = !(currentPlayer == 0);
 	int numStones = board.RemoveStones(white, x, y);
 	int freeSpaces = 0;
+	int addX1, addX2, addX3, addY1, addY2, addY3;
 
-	// Up
-	if (direction == 85 || direction == 117) {
-		// Determine free spaces
-		for (int i = 1; i < 4; i++) {
+	// Determine number of free spaces
+	for (int i = 1; i < 4; i++) {
+		// Up
+		if (direction == 85 || direction == 117) {
 			if (board.GetStoneCount(!white, x, y - i) == 0) {
 				freeSpaces++;
 			}
 			else {
 				break;
 			}
+			addX1 = addX2 = addX3 = x;
+			addY1 = y - 1;
+			addY2 = y - 2;
+			addY3 = y - 3;
 		}
-
-		// Place stones into free spaces
-		switch (freeSpaces) {
-		case 1:
-			board.AddStones(white, x, y - 1, numStones);
-			break;
-		case 2:
-			board.AddStones(white, x, y - 1, 1);
-			numStones--;
-			if (numStones > 0) { board.AddStones(white, x, y - 2, numStones); }
-			break;
-		case 3:
-			board.AddStones(white, x, y - 1, 1);
-			numStones--;
-			if (numStones >= 2) { board.AddStones(white, x, y - 2, 2); }
-			else { board.AddStones(white, x, y - 2, numStones); }
-			numStones -= 2;
-			if (numStones > 0) { board.AddStones(white, x, y - 3, numStones); }
-			break;
-		}
-	}
-	// Down
-	else if (direction == 68 || direction == 100) {
-		for (int i = 1; i < 4; i++) {
+		// Down
+		else if (direction == 68 || direction == 100) {
 			if (board.GetStoneCount(!white, x, y + i) == 0) {
 				freeSpaces++;
 			}
 			else {
 				break;
 			}
+			addX1 = addX2 = addX3 = x;
+			addY1 = y + 1;
+			addY2 = y + 2;
+			addY3 = y + 3;
 		}
-
-		// Place stones into free spaces
-		switch (freeSpaces) {
-		case 1:
-			board.AddStones(white, x, y + 1, numStones);
-			break;
-		case 2:
-			board.AddStones(white, x, y + 1, 1);
-			numStones--;
-			if (numStones > 0) { board.AddStones(white, x, y + 2, numStones); }
-			break;
-		case 3:
-			board.AddStones(white, x, y + 1, 1);
-			numStones--;
-			if (numStones >= 2) { board.AddStones(white, x, y + 2, 2); }
-			else { board.AddStones(white, x, y + 2, numStones); }
-			numStones -= 2;
-			if (numStones > 0) { board.AddStones(white, x, y + 3, numStones); }
-			break;
-		}
-	}
-	// Left
-	else if (direction == 76 || direction == 108) {
-		// Determine free spaces
-		for (int i = 1; i < 4; i++) {
+		// Left
+		else if (direction == 76 || direction == 108) {
 			if (board.GetStoneCount(!white, x - i, y) == 0) {
 				freeSpaces++;
 			}
 			else {
 				break;
 			}
+			addX1 = x - 1;
+			addX2 = x - 2;
+			addX3 = x - 3;
+			addY1 = addY2 = addY3 = y;
 		}
-
-		// Place stones into free spaces
-		switch (freeSpaces) {
-		case 1:
-			board.AddStones(white, x - 1, y, numStones);
-			break;
-		case 2:
-			board.AddStones(white, x - 1, y, 1);
-			numStones--;
-			if (numStones > 0) { board.AddStones(white, x - 2, y, numStones); }
-			break;
-		case 3:
-			board.AddStones(white, x - 1, y, 1);
-			numStones--;
-			if (numStones >= 2) { board.AddStones(white, x - 2, y, 2); }
-			else { board.AddStones(white, x - 2, y, numStones); }
-			numStones -= 2;
-			if (numStones > 0) { board.AddStones(white, x - 3, y, numStones); }
-			break;
-		}
-	}
-	// Right
-	else if (direction == 82 || direction == 114) {
-		// Determine free spaces
-		for (int i = 1; i < 4; i++) {
+		// Right
+		else if (direction == 82 || direction == 114) {
 			if (board.GetStoneCount(!white, x + i, y) == 0) {
 				freeSpaces++;
 			}
 			else {
 				break;
 			}
+			addX1 = x + 1;
+			addX2 = x + 2;
+			addX3 = x + 3;
+			addY1 = addY2 = addY3 = y;
 		}
+	}
 
-		// Place stones into free spaces
-		switch (freeSpaces) {
-		case 1:
-			board.AddStones(white, x + 1, y, numStones);
-			break;
-		case 2:
-			board.AddStones(white, x + 1, y, 1);
-			numStones--;
-			if (numStones > 0) { board.AddStones(white, x + 2, y, numStones); }
-			break;
-		case 3:
-			board.AddStones(white, x + 1, y, 1);
-			numStones--;
-			if (numStones >= 2) { board.AddStones(white, x + 2, y, 2); }
-			else { board.AddStones(white, x + 2, y, numStones); }
-			numStones -= 2;
-			if (numStones > 0) { board.AddStones(white, x + 3, y, numStones); }
-			break;
-		}
+	// Place stones in correct spaces
+	switch (freeSpaces) {
+	case 1:
+		board.AddStones(white, addX1, addY1, numStones);
+		break;
+	case 2:
+		board.AddStones(white, addX1, addY1, 1);
+		numStones--;
+		if (numStones > 0) { board.AddStones(white, addX2, addY2, numStones); }
+		break;
+	case 3:
+		board.AddStones(white, addX1, addY1, 1);
+		numStones--;
+		if (numStones >= 2) { board.AddStones(white, addX2, addY2, 2); }
+		else { board.AddStones(white, addX2, addY2, numStones); }
+		numStones -= 2;
+		if (numStones > 0) { board.AddStones(white, addX3, addY3, numStones); }
+		break;
 	}
 }
