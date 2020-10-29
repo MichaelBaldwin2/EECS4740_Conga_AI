@@ -142,8 +142,10 @@ void Game::MoveStones(int x, int y, int direction) {
 			if (board.GetStoneCount(!white, x, y - i) == 0) {
 				freeSpaces++;
 			}
+			else {
+				break;
+			}
 		}
-		std::cout << freeSpaces << std::endl;
 
 		// Place stones into free spaces
 		switch (freeSpaces) {
@@ -169,8 +171,10 @@ void Game::MoveStones(int x, int y, int direction) {
 			if (board.GetStoneCount(!white, x, y + i) == 0) {
 				freeSpaces++;
 			}
+			else {
+				break;
+			}
 		}
-		std::cout << freeSpaces << std::endl;
 
 		// Place stones into free spaces
 		switch (freeSpaces) {
@@ -197,8 +201,10 @@ void Game::MoveStones(int x, int y, int direction) {
 			if (board.GetStoneCount(!white, x - i, y) == 0) {
 				freeSpaces++;
 			}
+			else {
+				break;
+			}
 		}
-		std::cout << freeSpaces << std::endl;
 
 		// Place stones into free spaces
 		switch (freeSpaces) {
@@ -225,8 +231,10 @@ void Game::MoveStones(int x, int y, int direction) {
 			if (board.GetStoneCount(!white, x + i, y) == 0) {
 				freeSpaces++;
 			}
+			else {
+				break;
+			}
 		}
-		std::cout << freeSpaces << std::endl;
 
 		// Place stones into free spaces
 		switch (freeSpaces) {
