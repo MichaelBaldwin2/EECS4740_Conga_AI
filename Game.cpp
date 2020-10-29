@@ -1,10 +1,15 @@
 #include "Board.h"
 #include "Game.h"
+#include "Renderer.h"
+#include "Time.h"
+#include "Window.h"
+#include <SDL.h>
+#include <spdlog/spdlog.h>
 #include <iostream>
 #include <string>
 //#include <SDL.h>
 
-Game::Game() : board(), currentPlayer(0)
+Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), boardTexture(), currentPlayer(0)
 {
 	board.AddStones(false, 0, 0, 10);
 	board.AddStones(true, 3, 3, 10);
@@ -12,55 +17,199 @@ Game::Game() : board(), currentPlayer(0)
 	board.PrintBoardToConsole();
 }
 
+Game::~Game()
+{
+	renderer.Free();
+	window.Free();
+}
+
+bool Game::Init()
+{
+	window = Window(1280, 720, "The Journey Home");
+	if(window.GetSDLWindow() == nullptr)
+	{
+		return false;
+	}
+
+	renderer = Renderer(window, -1, SDL_RENDERER_ACCELERATED);
+	if(renderer.GetSDLRenderer() == nullptr)
+	{
+		return false;
+	}
+
+	spriteBatch = SpriteBatch(renderer);
+
+	// Load up the board, stones, and font textures
+	boardTexture = Texture(renderer, "Board.png");
+	board = Board(&Sprite(boardTexture));
+	board.AddStones(false, 0, 0, 10);
+	board.AddStones(true, 3, 3, 10);
+
+	return true;
+}
+
 void Game::Loop()
 {
-	bool isRunning = true;
-	int x, y, direction;
-	std::string nextMove, currentPlayerName;
+	Time::UpdateLogicDeltaTime();
+	Time::UpdateRenderDeltaTime();
+	float nextUpdate = Time::RealTimeSinceStartup();
+	float nextFpsRender = Time::RealTimeSinceStartup();
+	int updateFPS = 0;
+	int renderFPS = 0;
 
 	while(isRunning)
 	{
-		// TODO: ADD DIAGONAL DIRECTIONS -- FUCK
-		/* CONSOLE INPUT
-		*	Input should be of the form "xyd" where:
-		*	- x is the x coordinate of the pieces to move
-		*	- y is the y coordinate of the pieces to move
-		*	- d is the direction to move the pieces (UDLR)
-		*/
-		currentPlayerName = (currentPlayer == 0) ? "Black" : "White";
-		std::cout << "Enter move for " << currentPlayerName << ": ";
-		std::cin >> nextMove;
-		if (nextMove[0] == 'q' || nextMove[0] == 'Q') {
+		if(Time::RealTimeSinceStartup() >= nextUpdate)
+		{
+			nextUpdate = Time::RealTimeSinceStartup() + 0.016f;
+			Time::UpdateLogicDeltaTime();
+			UpdateTick(Time::LogicDeltaTime());
+			updateFPS++;
+		}
+
+		Time::UpdateRenderDeltaTime();
+		RenderTick(Time::RenderDeltaTime());
+		renderFPS++;
+
+		if(Time::RealTimeSinceStartup() >= nextFpsRender)
+		{
+			nextFpsRender = Time::RealTimeSinceStartup() + 1.0f;
+			spdlog::info("FPS: {0}({1:.4f}):{2}({3:.4f})", updateFPS, Time::LogicDeltaTime(), renderFPS, Time::RenderDeltaTime());
+			updateFPS = 0;
+			renderFPS = 0;
+		}
+	}
+}
+
+//void Game::Loop()
+//{
+//	bool isRunning = true;
+//	int x, y, direction;
+//	std::string nextMove, currentPlayerName;
+//
+//	while(isRunning)
+//	{
+//		// TODO: ADD DIAGONAL DIRECTIONS -- FUCK
+//		/* CONSOLE INPUT
+//		*	Input should be of the form "xyd" where:
+//		*	- x is the x coordinate of the pieces to move
+//		*	- y is the y coordinate of the pieces to move
+//		*	- d is the direction to move the pieces (UDLR)
+//		*/
+//		currentPlayerName = (currentPlayer == 0) ? "Black" : "White";
+//		std::cout << "Enter move for " << currentPlayerName << ": ";
+//		std::cin >> nextMove;
+//		if (nextMove[0] == 'q' || nextMove[0] == 'Q') {
+//			isRunning = false;
+//		}
+//		else if (nextMove.length() != 3) {
+//			std::cout << "ERROR: Please enter a valid command." << std::endl;
+//		}
+//		else {
+//			// Parse and check input
+//			x = nextMove[0] - 48;
+//			y = nextMove[1] - 48;
+//			direction = nextMove[2];
+//			if (Game::CheckInput(x, y, direction) == 0) {
+//				// Move stones and print board
+//				Game::MoveStones(x, y, direction);
+//				board.PrintBoardToConsole();
+//
+//				// Change currentPlayer
+//				switch (currentPlayer) {
+//				case 0:
+//					currentPlayer = 1;
+//					break;
+//				case 1:
+//					currentPlayer = 0;
+//					break;
+//				}
+//			}
+//		}
+//		// Win condition checking
+//
+//		// Rendering
+//	}
+//}
+
+void Game::UpdateTick(float deltaTime)
+{
+	SDL_Event e;
+	int x, y, direction;
+	std::string nextMove, currentPlayerName;
+
+	while(SDL_PollEvent(&e) != 0)
+	{
+		if(e.type == SDL_QUIT)
+		{
 			isRunning = false;
 		}
-		else if (nextMove.length() != 3) {
-			std::cout << "ERROR: Please enter a valid command." << std::endl;
-		}
-		else {
-			// Parse and check input
-			x = nextMove[0] - 48;
-			y = nextMove[1] - 48;
-			direction = nextMove[2];
-			if (Game::CheckInput(x, y, direction) == 0) {
-				// Move stones and print board
-				Game::MoveStones(x, y, direction);
-				board.PrintBoardToConsole();
+	}
 
-				// Change currentPlayer
-				switch (currentPlayer) {
+
+	// TODO: ADD DIAGONAL DIRECTIONS -- FUCK
+	/* CONSOLE INPUT
+	*	Input should be of the form "xyd" where:
+	*	- x is the x coordinate of the pieces to move
+	*	- y is the y coordinate of the pieces to move
+	*	- d is the direction to move the pieces (UDLR)
+	*/
+	currentPlayerName = (currentPlayer == 0) ? "Black" : "White";
+	std::cout << "Enter move for " << currentPlayerName << ": ";
+	std::cin >> nextMove;
+	if(nextMove[0] == 'q' || nextMove[0] == 'Q')
+	{
+		isRunning = false;
+	}
+	else if(nextMove.length() != 3)
+	{
+		std::cout << "ERROR: Please enter a valid command." << std::endl;
+	}
+	else
+	{
+		// Parse and check input
+		x = nextMove[0] - 48;
+		y = nextMove[1] - 48;
+		direction = nextMove[2];
+		if(Game::CheckInput(x, y, direction) == 0)
+		{
+			// Move stones and print board
+			Game::MoveStones(x, y, direction);
+			board.PrintBoardToConsole();
+
+			// Change currentPlayer
+			switch(currentPlayer)
+			{
 				case 0:
 					currentPlayer = 1;
 					break;
 				case 1:
 					currentPlayer = 0;
 					break;
-				}
 			}
 		}
-		// Win condition checking
-
-		// Rendering
 	}
+	// Win condition checking
+
+	// Rendering
+}
+
+void Game::RenderTick(float deltaTime)
+{
+	renderer.ClearScreen(Color::Black);
+	spriteBatch.Begin();
+
+	// All the sprite rendering happens here
+	spriteBatch.Draw(board.GetSprite(), Vector2::Zero);
+	board.PrintBoardToConsole();
+
+	spriteBatch.End();
+	renderer.PresentScreen();
+}
+
+Board* Game::GetBoard()
+{
+	return &board;
 }
 
 int Game::CheckInput(int x, int y, int direction) {

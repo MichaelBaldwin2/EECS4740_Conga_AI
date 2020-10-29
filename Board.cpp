@@ -3,7 +3,7 @@
 #include <sstream>
 #include <vector>
 
-Board::Board() : whiteStoneCounts(), blackStoneCounts()
+Board::Board(Sprite* sprite) : whiteStoneCounts(), blackStoneCounts(), sprite(sprite != NULL ? *sprite : Sprite())
 {
 	for(auto y = 0; y < 4; y++)
 	{
@@ -94,6 +94,11 @@ void Board::PrintBoardToConsole()
 		}
 		std::cout << "|" << std::endl;
 	}
+}
+
+Sprite Board::GetSprite()
+{
+	return sprite;
 }
 
 bool Board::CheckBounds(unsigned int x, unsigned int y)
