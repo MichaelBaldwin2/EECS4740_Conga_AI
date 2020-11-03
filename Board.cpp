@@ -3,7 +3,7 @@
 #include <sstream>
 #include <vector>
 
-Board::Board(Sprite* sprite) : whiteStoneCounts(), blackStoneCounts(), sprite(sprite != NULL ? *sprite : Sprite())
+Board::Board() : whiteStoneCounts(), blackStoneCounts()
 {
 	for(auto y = 0; y < 4; y++)
 	{
@@ -19,7 +19,7 @@ int Board::GetStoneCount(bool white, unsigned int x, unsigned int y)
 {
 	if(CheckBounds(x, y))
 	{
-		std::cout << "GetStoneCount(): Grid location is out of bounds" << std::endl;
+		//std::cout << "GetStoneCount(): Grid location is out of bounds" << std::endl;
 		return -1;
 	}
 
@@ -30,7 +30,7 @@ int Board::AddStones(bool white, unsigned int x, unsigned int y, unsigned int co
 {
 	if(CheckBounds(x, y))
 	{
-		std::cout << "AddStones(): Grid location is out of bounds" << std::endl;
+		//std::cout << "AddStones(): Grid location is out of bounds" << std::endl;
 		return -1;
 	}
 
@@ -42,7 +42,7 @@ int Board::RemoveStones(bool white, unsigned int x, unsigned int y)
 {
 	if(CheckBounds(x, y))
 	{
-		std::cout << "RemoveStones(): Grid location is out of bounds" << std::endl;
+		//std::cout << "RemoveStones(): Grid location is out of bounds" << std::endl;
 		return -1;
 	}
 
@@ -94,11 +94,6 @@ void Board::PrintBoardToConsole()
 		}
 		std::cout << "|" << std::endl;
 	}
-}
-
-Sprite Board::GetSprite()
-{
-	return sprite;
 }
 
 bool Board::CheckBounds(unsigned int x, unsigned int y)
