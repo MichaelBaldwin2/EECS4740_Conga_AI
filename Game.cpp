@@ -28,6 +28,12 @@ void Game::Loop()
 		*	- d1{d2} is the direction to move the pieces (U, D, L, R or NW, NE, SW, SE)
 		*/
 		currentPlayerName = (currentPlayer == 0) ? "Black" : "White";
+		// Check if current player lost
+		if (Game::CheckLoss()) {
+			std::cout << currentPlayerName << "has lost, press enter to exit." << std::endl;
+			std::cin >> nextMove;
+			exit(0);
+		}
 		std::cout << "Enter move for " << currentPlayerName << ": ";
 		std::cin >> nextMove;
 
@@ -64,10 +70,38 @@ void Game::Loop()
 				}
 			}
 		}
-		// Win condition checking
-
-		// Rendering
 	}
+}
+
+bool Game::CheckLoss() {
+	const int directions[] = {
+		85,		// Up
+		68,		// Down
+		76,		// Left
+		82,		// Right
+		165,	// Northwest
+		147,	// Northeast
+		170,	// Southwest
+		152		// Southeast
+	};
+
+	for (int y = 0; y < 4; y++) {
+		for (int x = 0; x < 4; x++) {
+			int count = board.GetStoneCount(currentPlayer, x, y);
+			if (count <= 0) {
+				continue;
+			}
+			else {
+				for (int i = 0; i < 8; i++) {
+					if (CheckInput(x, y, directions[i]) == true) {
+						return false;
+					}
+				}
+			}
+		}
+	}
+
+	return true;
 }
 
 bool Game::CheckInput(int x, int y, int direction) {
@@ -82,7 +116,6 @@ bool Game::CheckInput(int x, int y, int direction) {
 		152, 216,	// Southeast
 		-1
 	};
-	int errorCount = 0;
 	bool white = !(currentPlayer == 0);
 
 	if (x < 0 || x > 3) {
