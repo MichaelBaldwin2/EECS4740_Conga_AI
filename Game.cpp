@@ -8,7 +8,6 @@ Game::Game() : board(), currentPlayer(0)
 {
 	board.AddStones(false, 0, 0, 10);
 	board.AddStones(true, 3, 3, 10);
-
 	board.PrintBoardToConsole();
 }
 
@@ -30,8 +29,7 @@ void Game::Loop()
 		currentPlayerName = (currentPlayer == 0) ? "Black" : "White";
 		// Check if current player lost
 		if (Game::CheckLoss()) {
-			std::cout << currentPlayerName << "has lost, press enter to exit." << std::endl;
-			std::cin >> nextMove;
+			std::cout << currentPlayerName << " has lost." << std::endl;
 			exit(0);
 		}
 		std::cout << "Enter move for " << currentPlayerName << ": ";
