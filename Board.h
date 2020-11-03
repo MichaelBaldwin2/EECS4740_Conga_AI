@@ -18,4 +18,3 @@ public:
 private:
 	bool CheckBounds(unsigned int x, unsigned int y);
 };
-
