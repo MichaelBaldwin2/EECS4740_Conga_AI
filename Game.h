@@ -24,6 +24,7 @@ public:
 	~Game();
 	bool Init();
 	void Loop();
+	void GUILoop();
 	void UpdateTick(float deltaTime);
 	void RenderTick(float deltaTime);
 	Board* GetBoard();

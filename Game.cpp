@@ -50,6 +50,11 @@ bool Game::Init()
 
 void Game::Loop()
 {
+
+}
+
+void Game::GUILoop()
+{
 	Time::UpdateLogicDeltaTime();
 	Time::UpdateRenderDeltaTime();
 	float nextUpdate = Time::RealTimeSinceStartup();
