@@ -18,12 +18,6 @@ private:
 	Texture blackStoneTexture;
 	Texture whiteStoneTexture;
 	int currentPlayer;
-<<<<<<< HEAD
-	bool CheckLoss();
-	bool CheckInput(int x, int y, int direction);
-	void MoveStones(int x, int y, int direction);
-=======
->>>>>>> gui
 
 public:
 	Game();
