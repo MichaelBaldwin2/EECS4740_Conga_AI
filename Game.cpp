@@ -7,7 +7,6 @@
 #include <spdlog/spdlog.h>
 #include <iostream>
 #include <string>
-//#include <SDL.h>
 
 Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), boardTexture(), blackStoneTexture(), whiteStoneTexture(), currentPlayer(0) {}
 
