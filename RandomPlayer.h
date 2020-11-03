@@ -1,4 +1,11 @@
 #pragma once
-class RandomPlayer
-{};
+
+#include "Agent.h"
+
+class RandomPlayer : public Agent
+{
+
+public:
+	Move GetMove();
+};
 

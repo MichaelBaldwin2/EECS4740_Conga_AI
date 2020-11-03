@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Agent.h"
 #include "Board.h"
 #include "Renderer.h"
 #include "Texture.h"
@@ -18,6 +19,8 @@ private:
 	Texture blackStoneTexture;
 	Texture whiteStoneTexture;
 	int currentPlayer;
+	Agent* whitePlayer;
+	Agent* blackPlayer;
 
 public:
 	Game();

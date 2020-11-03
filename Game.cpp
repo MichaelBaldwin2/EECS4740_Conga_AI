@@ -1,5 +1,6 @@
 #include "Board.h"
 #include "Game.h"
+#include "RandomPlayer.h"
 #include "Renderer.h"
 #include "Time.h"
 #include "Window.h"
@@ -12,6 +13,8 @@ Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), bo
 
 Game::~Game()
 {
+	delete whitePlayer;
+	delete blackPlayer;
 	boardTexture.Free();
 	blackStoneTexture.Free();
 	whiteStoneTexture.Free();
@@ -21,7 +24,7 @@ Game::~Game()
 
 bool Game::Init()
 {
-	window = Window(1280, 720, "The Journey Home");
+	window = Window(1280, 720, "Conga AI");
 	if(window.GetSDLWindow() == nullptr)
 	{
 		return false;
@@ -39,6 +42,10 @@ bool Game::Init()
 	boardTexture = Texture(renderer, "Board.png");
 	blackStoneTexture = Texture(renderer, "BlackStone.png");
 	whiteStoneTexture = Texture(renderer, "WhiteStone.png");
+
+	whitePlayer = new RandomPlayer();
+	whitePlayer->name = "White";
+	whitePlayer->GetMove();
 
 	board = Board();
 	board.AddStones(false, 0, 0, 10);
@@ -93,8 +100,6 @@ void Game::UpdateTick(float deltaTime)
 			isRunning = false;
 		}
 	}
-
-
 
 	/* CONSOLE INPUT
 	*	Input should be of the form "xyd1{d2}" where:
@@ -151,9 +156,6 @@ void Game::UpdateTick(float deltaTime)
 			}
 		}
 	}
-	// Win condition checking
-
-	// Rendering
 }
 
 void Game::RenderTick(float deltaTime)

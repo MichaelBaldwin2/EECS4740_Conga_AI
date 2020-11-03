@@ -1,8 +1,18 @@
 #pragma once
 
+struct Move
+{
+	int x, y;
+	int direction;
+};
+
 class Agent
 {
 public:
-	virtual void OnUpdate() = 0;
+	std::string name;
+
+public:
+	virtual Move GetMove() = 0;
 };
+
 
