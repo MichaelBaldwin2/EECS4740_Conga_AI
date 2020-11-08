@@ -4,6 +4,7 @@
 #include "Renderer.h"
 #include "Time.h"
 #include "Window.h"
+#include "Agent.h"
 #include <SDL.h>
 #include <spdlog/spdlog.h>
 #include <iostream>
@@ -43,13 +44,14 @@ bool Game::Init()
 	blackStoneTexture = Texture(renderer, "BlackStone.png");
 	whiteStoneTexture = Texture(renderer, "WhiteStone.png");
 
-	whitePlayer = new RandomPlayer();
-	whitePlayer->name = "White";
-	whitePlayer->GetMove();
-
+	// Initialize board and add starting stones
 	board = Board();
 	board.AddStones(false, 0, 0, 10);
 	board.AddStones(true, 3, 3, 10);
+
+	// Initialize RandomPlayer for white
+	whitePlayer = new RandomPlayer();
+	whitePlayer->name = "White";
 
 	return true;
 }
@@ -90,8 +92,8 @@ void Game::Loop()
 void Game::UpdateTick(float deltaTime)
 {
 	SDL_Event e;
-	int x, y, direction;
-	std::string nextMove, currentPlayerName;
+	Move nextMove = Move();
+	std::string input, currentPlayerName;
 
 	while(SDL_PollEvent(&e) != 0)
 	{
@@ -108,52 +110,59 @@ void Game::UpdateTick(float deltaTime)
 	*	- d1{d2} is the direction to move the pieces (U, D, L, R or NW, NE, SW, SE)
 	*/
 	currentPlayerName = (currentPlayer == 0) ? "Black" : "White";
+
 	// Check if current player lost
 	if(Game::CheckLoss())
 	{
 		std::cout << currentPlayerName << " has lost." << std::endl;
 		exit(0);
 	}
-	std::cout << "Enter move for " << currentPlayerName << ": ";
-	std::cin >> nextMove;
-
-	// Parse and check input
-	if(nextMove[0] == 'q' || nextMove[0] == 'Q')
-	{
-		isRunning = false;
-	}
-	else if(nextMove.length() != 3 && nextMove.length() != 4)
-	{
-		std::cout << "ERROR: Please enter a valid command." << std::endl;
-	}
-	else
-	{
-		switch(nextMove.length())
+	
+	if (currentPlayer == 0) {
+		std::cout << "Enter move for " << currentPlayerName << ": ";
+		std::cin >> input;
+		// Parse and check input
+		if (input[0] == 'q' || input[0] == 'Q')
 		{
-			case 3:
-				direction = nextMove[2];
-			case 4:
-				direction = nextMove[2] + nextMove[3];
+			isRunning = false;
 		}
-		x = nextMove[0] - 48;
-		y = nextMove[1] - 48;
-
-		if(Game::CheckInput(x, y, direction))
+		else if (input.length() != 3 && input.length() != 4)
 		{
-			// Move stones and print board
-			Game::MoveStones(x, y, direction);
-			board.PrintBoardToConsole();
-
-			// Change currentPlayer
-			switch(currentPlayer)
+			std::cout << "ERROR: Please enter a valid command." << std::endl;
+		}
+		else {
+			switch (input.length())
 			{
-				case 0:
-					currentPlayer = 1;
-					break;
-				case 1:
-					currentPlayer = 0;
-					break;
+			case 3:
+				nextMove.direction = input[2];
+				break;
+			case 4:
+				nextMove.direction = input[2] + input[3];
+				break;
 			}
+			nextMove.x = input[0] - 48;
+			nextMove.y = input[1] - 48;
+		}
+	}
+	else {
+		nextMove = whitePlayer->GetMove();
+	}
+
+	if (Game::CheckInput(nextMove.x, nextMove.y, nextMove.direction))
+	{
+		// Move stones and print board
+		Game::MoveStones(nextMove.x, nextMove.y, nextMove.direction);
+		board.PrintBoardToConsole();
+
+		// Change currentPlayer
+		switch (currentPlayer)
+		{
+		case 0:
+			currentPlayer = 1;
+			break;
+		case 1:
+			currentPlayer = 0;
+			break;
 		}
 	}
 }
