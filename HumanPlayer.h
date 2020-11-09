@@ -1,4 +1,11 @@
 #pragma once
-class HumanPlayer
-{};
+
+#include "Agent.h"
+
+class HumanPlayer : public Agent
+{
+
+public:
+	Move GetMove();
+};
 

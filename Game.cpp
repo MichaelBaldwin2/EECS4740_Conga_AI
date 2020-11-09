@@ -1,6 +1,7 @@
 #include "Board.h"
 #include "Game.h"
 #include "RandomPlayer.h"
+#include "HumanPlayer.h"
 #include "Renderer.h"
 #include "Time.h"
 #include "Window.h"
@@ -53,6 +54,10 @@ bool Game::Init()
 	whitePlayer = new RandomPlayer();
 	whitePlayer->name = "White";
 
+	// Initialize HumanPlayer for black
+	blackPlayer = new HumanPlayer();
+	blackPlayer->name = "Black";
+
 	return true;
 }
 
@@ -93,6 +98,7 @@ void Game::UpdateTick(float deltaTime)
 {
 	SDL_Event e;
 	Move nextMove = Move();
+	Agent* player;
 	std::string input, currentPlayerName;
 
 	while(SDL_PollEvent(&e) != 0)
@@ -103,50 +109,16 @@ void Game::UpdateTick(float deltaTime)
 		}
 	}
 
-	/* CONSOLE INPUT
-	*	Input should be of the form "xyd1{d2}" where:
-	*	- x is the x coordinate of the pieces to move
-	*	- y is the y coordinate of the pieces to move
-	*	- d1{d2} is the direction to move the pieces (U, D, L, R or NW, NE, SW, SE)
-	*/
-	currentPlayerName = (currentPlayer == 0) ? "Black" : "White";
+	player = (currentPlayer == 0) ? blackPlayer : whitePlayer;
 
 	// Check if current player lost
 	if(Game::CheckLoss())
 	{
-		std::cout << currentPlayerName << " has lost." << std::endl;
+		std::cout << player->name << " has lost." << std::endl;
 		exit(0);
 	}
-	
-	if (currentPlayer == 0) {
-		std::cout << "Enter move for " << currentPlayerName << ": ";
-		std::cin >> input;
-		// Parse and check input
-		if (input[0] == 'q' || input[0] == 'Q')
-		{
-			isRunning = false;
-		}
-		else if (input.length() != 3 && input.length() != 4)
-		{
-			std::cout << "ERROR: Please enter a valid command." << std::endl;
-		}
-		else {
-			switch (input.length())
-			{
-			case 3:
-				nextMove.direction = input[2];
-				break;
-			case 4:
-				nextMove.direction = input[2] + input[3];
-				break;
-			}
-			nextMove.x = input[0] - 48;
-			nextMove.y = input[1] - 48;
-		}
-	}
-	else {
-		nextMove = whitePlayer->GetMove();
-	}
+
+	nextMove = player->GetMove();
 
 	if (Game::CheckInput(nextMove.x, nextMove.y, nextMove.direction))
 	{
