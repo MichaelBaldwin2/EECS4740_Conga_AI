@@ -1,4 +1,10 @@
 #pragma once
 
-class AIPlayer
-{};
+#include "Agent.h"
+
+class AIPlayer : public Agent
+{
+
+public:
+	Move GetMove();
+};
