@@ -8,4 +8,3 @@ class HumanPlayer : public Agent
 public:
 	Move GetMove();
 };
-

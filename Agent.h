@@ -16,5 +16,3 @@ public:
 public:
 	virtual Move GetMove() = 0;
 };
-
-
