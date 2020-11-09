@@ -11,7 +11,9 @@
 #include <iostream>
 #include <string>
 
-Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), boardTexture(), blackStoneTexture(), whiteStoneTexture(), currentPlayer(0) {}
+Agent* player;
+
+Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), boardTexture(), blackStoneTexture(), whiteStoneTexture() {}
 
 Game::~Game()
 {
@@ -54,9 +56,10 @@ bool Game::Init()
 	whitePlayer = new RandomPlayer();
 	whitePlayer->name = "White";
 
-	// Initialize HumanPlayer for black
+	// Initialize HumanPlayer for black and set as start player
 	blackPlayer = new HumanPlayer();
 	blackPlayer->name = "Black";
+	player = blackPlayer;
 
 	return true;
 }
@@ -98,8 +101,6 @@ void Game::UpdateTick(float deltaTime)
 {
 	SDL_Event e;
 	Move nextMove = Move();
-	Agent* player;
-	std::string input, currentPlayerName;
 
 	while(SDL_PollEvent(&e) != 0)
 	{
@@ -108,8 +109,6 @@ void Game::UpdateTick(float deltaTime)
 			isRunning = false;
 		}
 	}
-
-	player = (currentPlayer == 0) ? blackPlayer : whitePlayer;
 
 	// Check if current player lost
 	if(Game::CheckLoss())
@@ -126,14 +125,14 @@ void Game::UpdateTick(float deltaTime)
 		Game::MoveStones(nextMove.x, nextMove.y, nextMove.direction);
 		board.PrintBoardToConsole();
 
-		// Change currentPlayer
-		switch (currentPlayer)
+		// Change current player
+		switch (player == blackPlayer)
 		{
-		case 0:
-			currentPlayer = 1;
+		case false:
+			player = blackPlayer;
 			break;
-		case 1:
-			currentPlayer = 0;
+		case true:
+			player = whitePlayer;
 			break;
 		}
 	}
@@ -198,7 +197,7 @@ bool Game::CheckLoss()
 	{
 		for(int x = 0; x < 4; x++)
 		{
-			int count = board.GetStoneCount(currentPlayer, x, y);
+			int count = board.GetStoneCount((player == whitePlayer), x, y);
 			if(count <= 0)
 			{
 				continue;
@@ -232,7 +231,7 @@ bool Game::CheckInput(int x, int y, int direction)
 		152, 216,	// Southeast
 		-1
 	};
-	bool white = !(currentPlayer == 0);
+	bool white = (player == whitePlayer);
 
 	if(x < 0 || x > 3)
 	{
@@ -302,7 +301,7 @@ bool Game::CheckInput(int x, int y, int direction)
 
 void Game::MoveStones(int x, int y, int direction)
 {
-	bool white = !(currentPlayer == 0);
+	bool white = (player == whitePlayer);
 	int numStones = board.RemoveStones(white, x, y);
 	int freeSpaces = 0;
 	int addX[3], addY[3];

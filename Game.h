@@ -18,7 +18,6 @@ private:
 	Texture boardTexture;
 	Texture blackStoneTexture;
 	Texture whiteStoneTexture;
-	int currentPlayer;
 	Agent* whitePlayer;
 	Agent* blackPlayer;
 
