@@ -13,7 +13,7 @@
 
 Agent* player;
 
-Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), boardTexture(), blackStoneTexture(), whiteStoneTexture() {}
+Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), boardTexture(), blackStoneTexture(), whiteStoneTexture(), blackPlayer(new HumanPlayer()), whitePlayer(new RandomPlayer()) {}
 
 Game::~Game()
 {
@@ -52,13 +52,9 @@ bool Game::Init()
 	board.AddStones(false, 0, 0, 10);
 	board.AddStones(true, 3, 3, 10);
 
-	// Initialize RandomPlayer for white
-	whitePlayer = new RandomPlayer();
-	whitePlayer->name = "White";
-
-	// Initialize HumanPlayer for black and set as start player
-	blackPlayer = new HumanPlayer();
+	// Set player names and start player
 	blackPlayer->name = "Black";
+	whitePlayer->name = "White";
 	player = blackPlayer;
 
 	return true;
@@ -117,6 +113,7 @@ void Game::UpdateTick(float deltaTime)
 		exit(0);
 	}
 
+	// Get and make next move
 	nextMove = player->GetMove();
 
 	if (Game::CheckInput(nextMove.x, nextMove.y, nextMove.direction))

@@ -18,8 +18,8 @@ private:
 	Texture boardTexture;
 	Texture blackStoneTexture;
 	Texture whiteStoneTexture;
-	Agent* whitePlayer;
 	Agent* blackPlayer;
+	Agent* whitePlayer;
 
 public:
 	Game();
