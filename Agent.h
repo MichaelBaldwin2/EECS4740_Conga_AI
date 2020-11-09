@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Board.h"
 #include <string>
 
 struct Move
@@ -14,5 +15,5 @@ public:
 	std::string name;
 
 public:
-	virtual Move GetMove() = 0;
+	virtual Move GetMove(Board& board) = 0;
 };

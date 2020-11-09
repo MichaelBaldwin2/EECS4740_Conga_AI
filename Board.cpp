@@ -100,3 +100,83 @@ bool Board::CheckBounds(unsigned int x, unsigned int y)
 {
 	return x >= 4 || y >= 4;
 }
+
+bool Board::CheckInput(bool white, int x, int y, int direction)
+{
+	const int validDirections[] = {
+		85, 117,	// Up
+		68, 100,	// Down
+		76, 108,	// Left
+		82, 114,	// Right
+		165, 229,	// Northwest
+		147, 211,	// Northeast
+		170, 234,	// Southwest
+		152, 216,	// Southeast
+		-1
+	};
+
+	if (x < 0 || x > 3)
+	{
+		std::cout << "ERROR: Please enter a valid x coordinate." << std::endl;
+		return false;
+	}
+	if (y < 0 || y > 3)
+	{
+		std::cout << "ERROR: Please enter a valid y coordinate." << std::endl;
+		return false;
+	}
+	if (std::find(std::begin(validDirections), std::end(validDirections), direction) == std::end(validDirections))
+	{
+		std::cout << "ERROR: Please enter a valid direction." << std::endl;
+		return false;
+	}
+	if (GetStoneCount(white, x, y) == 0)
+	{
+		return false;
+	}
+	// Up
+	if (direction == 85 || direction == 117)
+	{
+		return (GetStoneCount(!white, x, y - 1) == 0);
+	}
+	// Down
+	else if (direction == 68 || direction == 100)
+	{
+		return (GetStoneCount(!white, x, y + 1) == 0);
+	}
+	// Left
+	else if (direction == 76 || direction == 108)
+	{
+		return (GetStoneCount(!white, x - 1, y) == 0);
+	}
+	// Right
+	else if (direction == 82 || direction == 114)
+	{
+		return (GetStoneCount(!white, x + 1, y) == 0);
+	}
+	// Northwest
+	else if (direction == 165 || direction == 229)
+	{
+		return (GetStoneCount(!white, x - 1, y - 1) == 0);
+	}
+	// Northeast
+	else if (direction == 147 || direction == 211)
+	{
+		return (GetStoneCount(!white, x + 1, y - 1) == 0);
+	}
+	// Southwest
+	else if (direction == 170 || direction == 234)
+	{
+		return (GetStoneCount(!white, x - 1, y + 1) == 0);
+	}
+	// Southeast
+	else if (direction == 152 || direction == 216)
+	{
+		return (GetStoneCount(!white, x + 1, y + 1) == 0);
+	}
+	else
+	{
+		return false;
+	}
+}
+

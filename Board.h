@@ -14,6 +14,7 @@ public:
 	int AddStones(bool white, unsigned int x, unsigned int y, unsigned int count);
 	int RemoveStones(bool white, unsigned int x, unsigned int y);
 	void PrintBoardToConsole();
+	bool CheckInput(bool white, int x, int y, int direction);
 
 private:
 	bool CheckBounds(unsigned int x, unsigned int y);

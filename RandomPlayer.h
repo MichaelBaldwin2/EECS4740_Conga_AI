@@ -6,5 +6,5 @@ class RandomPlayer : public Agent
 {
 
 public:
-	Move GetMove();
+	Move GetMove(Board& board);
 };

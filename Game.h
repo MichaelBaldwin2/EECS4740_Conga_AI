@@ -32,6 +32,6 @@ public:
 
 private:
 	bool CheckLoss();
-	bool CheckInput(int x, int y, int direction);
+	//bool CheckInput(int x, int y, int direction);
 	void MoveStones(int x, int y, int direction);
 };
