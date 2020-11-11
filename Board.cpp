@@ -180,3 +180,23 @@ bool Board::CheckInput(bool white, int x, int y, int direction)
 	}
 }
 
+bool Board::operator==(Board board)
+{
+	for(auto y = 0; y < 4; y++)
+	{
+		for(auto x = 0; x < 4; x++)
+		{
+			if(this->whiteStoneCounts[x][y] != board.whiteStoneCounts[x][y])
+			{
+				return false;
+			}
+			if(this->blackStoneCounts[x][y] != board.blackStoneCounts[x][y])
+			{
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+

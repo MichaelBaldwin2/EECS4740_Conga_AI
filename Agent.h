@@ -1,13 +1,8 @@
 #pragma once
 
 #include "Board.h"
+#include "Move.h"
 #include <string>
-
-struct Move
-{
-	int x, y;
-	int direction;
-};
 
 class Agent
 {

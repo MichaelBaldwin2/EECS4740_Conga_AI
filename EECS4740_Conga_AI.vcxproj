@@ -160,6 +160,7 @@
     <ClCompile Include="HumanPlayer.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="AIPlayer.cpp" />
+    <ClCompile Include="Minimax.cpp" />
     <ClCompile Include="RandomPlayer.cpp" />
     <ClCompile Include="Rect.cpp" />
     <ClCompile Include="RectInt.cpp" />
@@ -180,6 +181,8 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="AIPlayer.h" />
     <ClInclude Include="HumanPlayer.h" />
+    <ClInclude Include="Minimax.h" />
+    <ClInclude Include="Move.h" />
     <ClInclude Include="RandomPlayer.h" />
     <ClInclude Include="Rect.h" />
     <ClInclude Include="RectInt.h" />

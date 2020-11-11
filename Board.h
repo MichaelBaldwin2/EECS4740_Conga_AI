@@ -15,6 +15,7 @@ public:
 	int RemoveStones(bool white, unsigned int x, unsigned int y);
 	void PrintBoardToConsole();
 	bool CheckInput(bool white, int x, int y, int direction);
+	bool operator ==(Board board);
 
 private:
 	bool CheckBounds(unsigned int x, unsigned int y);
