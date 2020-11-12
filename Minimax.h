@@ -18,8 +18,8 @@ private:
 
 public:
 	Minimax(int horizon = 2);
-	void GenerateTree(Board currentBoard);
+	void GenerateTree(bool isWhite, Board currentBoard);
 	int GetNumberOfMoves(bool isWhite, Board board);
-	std::vector<Move> Minimax::GetMoves();
+	std::vector<Move> GetMoves(bool isWhite, Board board);
 };
 

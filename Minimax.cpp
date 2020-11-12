@@ -4,15 +4,26 @@ Minimax::Minimax(int horizon) : gameTree(), horizon(horizon)
 {}
 
 
-void Minimax::GenerateTree(Board currentBoard)
+void Minimax::GenerateTree(bool isWhite, Board currentBoard)
 {
+	Board newBoard = Board();
 	BoardState state;
+
+	// Initial state
 	state.board = currentBoard;
-	state.evalValue = 3;
+	state.evalValue = ; // Determine evalValue
 	gameTree.push_back(state);
 
-	for (int i = 1; i <= horizon; i++) {
-		GetNumberOfMoves(false, currentBoard);
+	std::vector<Move> possibleMoves = GetMoves(isWhite, currentBoard);
+	int numberPossibleMoves = GetNumberOfMoves(isWhite, currentBoard);
+
+	for (int i = 0; i < numberPossibleMoves; i++) {
+		newBoard = currentBoard; // Copy current board
+		newBoard.MoveStones(isWhite, possibleMoves[i].x, possibleMoves[i].y, possibleMoves[i].direction);
+
+		state.board = newBoard;
+		state.evalValue = ;// Calculate new evalValue;
+		gameTree.push_back(state);
 	}
 }
 
@@ -31,8 +42,10 @@ int Minimax::GetNumberOfMoves(bool isWhite, Board board)
 	return numOfMoves;
 }
 
-std::vector<> Game::GetMoves
+std::vector<Move> Minimax::GetMoves(bool isWhite, Board board)
 {
+	std::vector<Move> possibleMoves;
+
 	const int directions[] = {
 		85,		// Up
 		68,		// Down
@@ -48,23 +61,28 @@ std::vector<> Game::GetMoves
 	{
 		for(int x = 0; x < 4; x++)
 		{
-			int count = board.GetStoneCount((player == whitePlayer), x, y);
+			int count = board.GetStoneCount(isWhite, x, y);
 			if(count <= 0)
 			{
 				continue;
 			}
 			else
 			{
+				Move move;
 				for(int i = 0; i < 8; i++)
 				{
-					if(board.CheckInput((player == whitePlayer), x, y, directions[i]) == true)
+					if(board.CheckInput(isWhite, x, y, directions[i]) == true)
 					{
-						return false;
+						move.x = x;
+						move.y = y;
+						move.direction = directions[i];
+
+						possibleMoves.push_back(move);
 					}
 				}
 			}
 		}
 	}
 
-	return true;
+	return possibleMoves;
 }
