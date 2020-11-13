@@ -19,7 +19,7 @@ int Board::GetStoneCount(bool white, unsigned int x, unsigned int y)
 {
 	if(CheckBounds(x, y))
 	{
-		std::cout << "GetStoneCount(): Grid location is out of bounds" << std::endl;
+		//std::cout << "GetStoneCount(): Grid location is out of bounds" << std::endl;
 		return -1;
 	}
 
@@ -30,7 +30,7 @@ int Board::AddStones(bool white, unsigned int x, unsigned int y, unsigned int co
 {
 	if(CheckBounds(x, y))
 	{
-		std::cout << "AddStones(): Grid location is out of bounds" << std::endl;
+		//std::cout << "AddStones(): Grid location is out of bounds" << std::endl;
 		return -1;
 	}
 
@@ -42,7 +42,7 @@ int Board::RemoveStones(bool white, unsigned int x, unsigned int y)
 {
 	if(CheckBounds(x, y))
 	{
-		std::cout << "RemoveStones(): Grid location is out of bounds" << std::endl;
+		//std::cout << "RemoveStones(): Grid location is out of bounds" << std::endl;
 		return -1;
 	}
 
@@ -322,6 +322,44 @@ void Board::MoveStones(bool white, unsigned int x, unsigned int y, unsigned int 
 		if (numStones > 0) { AddStones(white, addX[2], addY[2], numStones); }
 		break;
 	}
+}
+
+bool Board::CheckLoss(bool white)
+{
+	const int directions[] = {
+		85,		// Up
+		68,		// Down
+		76,		// Left
+		82,		// Right
+		165,	// Northwest
+		147,	// Northeast
+		170,	// Southwest
+		152		// Southeast
+	};
+
+	for(int y = 0; y < 4; y++)
+	{
+		for(int x = 0; x < 4; x++)
+		{
+			int count = GetStoneCount(white, x, y);
+			if(count <= 0)
+			{
+				continue;
+			}
+			else
+			{
+				for(int i = 0; i < 8; i++)
+				{
+					if(CheckInput(white, x, y, directions[i]) == true)
+					{
+						return false;
+					}
+				}
+			}
+		}
+	}
+
+	return true;
 }
 
 bool Board::operator==(Board board)

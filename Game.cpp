@@ -14,7 +14,7 @@
 
 Agent* player;
 
-Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), boardTexture(), blackStoneTexture(), whiteStoneTexture(), blackPlayer(new AIPlayer()), whitePlayer(new HumanPlayer()) {}
+Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), boardTexture(), blackStoneTexture(), whiteStoneTexture(), blackPlayer(new HumanPlayer()), whitePlayer(new AIPlayer()) {}
 
 Game::~Game()
 {
@@ -108,8 +108,7 @@ void Game::UpdateTick(float deltaTime)
 	}
 
 	// Check if current player lost
-	if(Game::CheckLoss())
-	{
+	if(board.CheckLoss((player == whitePlayer))) {
 		std::cout << player->name << " has lost." << std::endl;
 		exit(0);
 	}
@@ -195,6 +194,7 @@ Board* Game::GetBoard()
 	return &board;
 }
 
+/*
 bool Game::CheckLoss()
 {
 	const int directions[] = {
@@ -232,6 +232,7 @@ bool Game::CheckLoss()
 
 	return true;
 }
+*/
 
 bool Game::CheckInput(int x, int y, int direction)
 {

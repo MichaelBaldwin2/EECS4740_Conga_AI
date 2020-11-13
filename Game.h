@@ -31,7 +31,7 @@ public:
 	Board* GetBoard();
 
 private:
-	bool CheckLoss();
+	//bool CheckLoss();
 	bool CheckInput(int x, int y, int direction);
 	void MoveStones(int x, int y, int direction);
 };

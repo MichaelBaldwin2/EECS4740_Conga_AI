@@ -177,6 +177,7 @@
   <ItemGroup>
     <ClInclude Include="Agent.h" />
     <ClInclude Include="Board.h" />
+    <ClInclude Include="BoardState.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="AIPlayer.h" />

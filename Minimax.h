@@ -1,15 +1,9 @@
 #pragma once
 
 #include "Board.h"
+#include "BoardState.h"
 #include "Move.h"
 #include <vector>
-
-struct BoardState
-{
-	Board board;
-	Move move;
-	int evalValue;
-};
 
 class Minimax
 {

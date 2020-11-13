@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Agent.h"
-#include "Minimax.h"
+#include "BoardState.h"
 
 class AIPlayer : public Agent
 {
-private:
-	Minimax minimax;
-
 public:
 	Move GetMove(Board& board);
+	BoardState Minimax(BoardState state, int depth, bool player);
+	int GetEvalValue(bool player, Board board);
+	std::vector<Move> GetMoves(bool isWhite, Board board);
 };
