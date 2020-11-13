@@ -22,69 +22,10 @@ BoardState Minimax::GetOptimalMove(int depth, int nodeIndex, bool isMax) {
 
 void Minimax::GenerateTree(bool isWhite, Board currentBoard)
 {
-	Board newBoard = Board();
-	BoardState state;
+	for(auto i = 0; i < horizon; i++)
+	{
 
-	// Initial state
-	state.board = currentBoard;
-	state.evalValue = GetEvalValue(isWhite, newBoard);
-	gameTree.push_back(state);
-
-	for (int i = 1; i <= horizon; i++) {
-		bool player;
-		if (i % 2 == 0) {
-			player = !isWhite;
-		}
-		else {
-			player = isWhite;
-		}
-
-		std::vector<Move> possibleMoves = GetMoves(player, currentBoard);
-		int numberPossibleMoves = GetNumberOfMoves(player, currentBoard);
-
-		for (int j = 0; j < numberPossibleMoves; j++) {
-			Move move = possibleMoves[j];
-			newBoard = currentBoard; // Copy current board
-			newBoard.MoveStones(player, possibleMoves[j].x, possibleMoves[j].y, possibleMoves[j].direction);
-
-			state.board = newBoard;
-			state.move = move;
-			state.evalValue = GetEvalValue(isWhite, newBoard);
-			gameTree.push_back(state);
-		}
 	}
-}
-
-int Minimax::GetNumberOfMoves(bool isWhite, Board board)
-{
-	int numOfMoves = 0;
-	const int directions[] = {
-		85,		// Up
-		68,		// Down
-		76,		// Left
-		82,		// Right
-		165,	// Northwest
-		147,	// Northeast
-		170,	// Southwest
-		152		// Southeast
-	};
-
-	for(auto y = 0; y < 4; y++)	{
-		for(auto x = 0; x < 4; x++) {
-			if (board.GetStoneCount(isWhite, x, y) <= 0) {
-				continue;
-			}
-			else {
-				for (auto i = 0; i < 8; i++) {
-					if (board.CheckInput(isWhite, x, y, directions[i])) { 
-						numOfMoves++;
-					}
-				}
-			}
-		}
-	}
-
-	return numOfMoves;
 }
 
 std::vector<Move> Minimax::GetMoves(bool isWhite, Board board)
@@ -112,15 +53,14 @@ std::vector<Move> Minimax::GetMoves(bool isWhite, Board board)
 			}
 			else
 			{
-				Move move;
 				for(int i = 0; i < 8; i++)
 				{
 					if(board.CheckInput(isWhite, x, y, directions[i]) == true)
 					{
+						Move move;
 						move.x = x;
 						move.y = y;
 						move.direction = directions[i];
-
 						possibleMoves.push_back(move);
 					}
 				}

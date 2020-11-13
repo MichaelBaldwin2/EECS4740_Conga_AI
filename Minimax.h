@@ -8,7 +8,7 @@ struct BoardState
 {
 	Board board;
 	Move move;
-	unsigned int evalValue;
+	int evalValue;
 };
 
 class Minimax
@@ -21,7 +21,6 @@ public:
 	Minimax(int horizon = 2);
 	BoardState GetOptimalMove(int depth, int nodeIndex, bool isMax);
 	void GenerateTree(bool isWhite, Board currentBoard);
-	int GetNumberOfMoves(bool isWhite, Board board);
 	std::vector<Move> GetMoves(bool isWhite, Board board);
 	int GetEvalValue(bool isWhite, Board board);
 };

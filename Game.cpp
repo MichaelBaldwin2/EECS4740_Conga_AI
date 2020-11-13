@@ -117,8 +117,8 @@ void Game::UpdateTick(float deltaTime)
 	// Get and make next move
 	nextMove = player->GetMove(board);
 
-	//if (Game::CheckInput(nextMove.x, nextMove.y, nextMove.direction))
-	//{
+	if (Game::CheckInput(nextMove.x, nextMove.y, nextMove.direction))
+	{
 		// Move stones and print board
 		Game::MoveStones(nextMove.x, nextMove.y, nextMove.direction);
 		board.PrintBoardToConsole();
@@ -133,7 +133,7 @@ void Game::UpdateTick(float deltaTime)
 			player = whitePlayer;
 			break;
 		}
-	//}
+	}
 }
 
 void Game::RenderTick(float deltaTime)
@@ -233,7 +233,6 @@ bool Game::CheckLoss()
 	return true;
 }
 
-/*
 bool Game::CheckInput(int x, int y, int direction)
 {
 	const int validDirections[] = {
@@ -314,7 +313,6 @@ bool Game::CheckInput(int x, int y, int direction)
 		return false;
 	}
 }
-*/
 
 void Game::MoveStones(int x, int y, int direction)
 {

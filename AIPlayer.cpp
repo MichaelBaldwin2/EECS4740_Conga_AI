@@ -4,7 +4,6 @@
 
 Move AIPlayer::GetMove(Board& board) {
 	Move move = Move();
-	Minimax minimax = Minimax();
 
 	bool isWhite = (this->name).compare("White") == 0;
 	minimax.GenerateTree(isWhite, board);
