@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "RandomPlayer.h"
 #include "HumanPlayer.h"
+#include "AIPlayer.h"
 #include "Renderer.h"
 #include "Time.h"
 #include "Window.h"
@@ -13,7 +14,7 @@
 
 Agent* player;
 
-Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), boardTexture(), blackStoneTexture(), whiteStoneTexture(), blackPlayer(new RandomPlayer()), whitePlayer(new RandomPlayer()) {}
+Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), boardTexture(), blackStoneTexture(), whiteStoneTexture(), blackPlayer(new AIPlayer()), whitePlayer(new HumanPlayer()) {}
 
 Game::~Game()
 {

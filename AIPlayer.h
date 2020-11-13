@@ -6,5 +6,5 @@ class AIPlayer : public Agent
 {
 
 public:
-	Move GetMove();
+	Move GetMove(Board& board);
 };
