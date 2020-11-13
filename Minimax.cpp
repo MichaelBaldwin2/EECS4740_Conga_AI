@@ -27,7 +27,11 @@ void Minimax::GenerateTree(bool isWhite, Board currentBoard)
 
 	// Initial state
 	state.board = currentBoard;
+<<<<<<< HEAD
 	state.evalValue = GetEvalValue(isWhite, newBoard);
+=======
+	state.evalValue = 0; // Determine evalValue
+>>>>>>> gui
 	gameTree.push_back(state);
 
 	for (int i = 1; i <= horizon; i++) {
@@ -47,11 +51,17 @@ void Minimax::GenerateTree(bool isWhite, Board currentBoard)
 			newBoard = currentBoard; // Copy current board
 			newBoard.MoveStones(player, possibleMoves[j].x, possibleMoves[j].y, possibleMoves[j].direction);
 
+<<<<<<< HEAD
 			state.board = newBoard;
 			state.move = move;
 			state.evalValue = GetEvalValue(isWhite, newBoard);
 			gameTree.push_back(state);
 		}
+=======
+		state.board = newBoard;
+		state.evalValue = 0;// Calculate new evalValue;
+		gameTree.push_back(state);
+>>>>>>> gui
 	}
 }
 

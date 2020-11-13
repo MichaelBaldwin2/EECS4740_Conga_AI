@@ -152,7 +152,24 @@ void Game::RenderTick(float deltaTime)
 			auto whiteStoneCount = board.GetStoneCount(true, x, y);
 			auto blackStoneCount = board.GetStoneCount(false, x, y);
 
-			for(auto i = 0; i < whiteStoneCount; i++)
+			for(int drawY = 0, i = 0; drawY < 64 && i < whiteStoneCount; drawY += 16)
+			{
+				for(auto drawX = 0; drawX < 64 && i < whiteStoneCount; drawX += 16, i++)
+				{
+					auto position = Vector2((75 + (x * 144)) + drawX, (75 + (y * 144)) + drawY);
+					spriteBatch.Draw(Sprite(whiteStoneTexture), position, Color::White, 0, Vector2::Zero, Vector2::One, SpriteFlip::None, 0.5f);
+				}
+			}
+			for(int drawY = 0, i = 0; drawY < 64 && i < blackStoneCount; drawY += 16)
+			{
+				for(auto drawX = 0; drawX < 64 && i < blackStoneCount; drawX += 16, i++)
+				{
+					auto position = Vector2((75 + (x * 144)) + drawX, (75 + (y * 144)) + drawY);
+					spriteBatch.Draw(Sprite(blackStoneTexture), position, Color::White, 0, Vector2::Zero, Vector2::One, SpriteFlip::None, 0.5f);
+				}
+			}
+
+			/*for(auto i = 0; i < whiteStoneCount; i++)
 			{
 				auto flipType = std::rand() % 3;
 				auto spriteFlip = flipType == 0 ? SpriteFlip::None : flipType == 1 ? SpriteFlip::Horizontal : SpriteFlip::Vertical;
@@ -165,7 +182,7 @@ void Game::RenderTick(float deltaTime)
 				auto spriteFlip = flipType == 0 ? SpriteFlip::None : flipType == 1 ? SpriteFlip::Horizontal : SpriteFlip::Vertical;
 				auto position = Vector2((75 + (x * 144)) + (std::rand() % 64), (75 + (y * 144)) + (std::rand() % 64));
 				spriteBatch.Draw(Sprite(blackStoneTexture), position, Color::White, 0, Vector2::Zero, Vector2::One, spriteFlip, 0.5f);
-			}
+			}*/
 		}
 	}
 
