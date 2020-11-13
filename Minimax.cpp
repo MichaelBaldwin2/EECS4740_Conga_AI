@@ -11,7 +11,7 @@ void Minimax::GenerateTree(bool isWhite, Board currentBoard)
 
 	// Initial state
 	state.board = currentBoard;
-	state.evalValue = ; // Determine evalValue
+	state.evalValue = 0; // Determine evalValue
 	gameTree.push_back(state);
 
 	std::vector<Move> possibleMoves = GetMoves(isWhite, currentBoard);
@@ -22,7 +22,7 @@ void Minimax::GenerateTree(bool isWhite, Board currentBoard)
 		newBoard.MoveStones(isWhite, possibleMoves[i].x, possibleMoves[i].y, possibleMoves[i].direction);
 
 		state.board = newBoard;
-		state.evalValue = ;// Calculate new evalValue;
+		state.evalValue = 0;// Calculate new evalValue;
 		gameTree.push_back(state);
 	}
 }
