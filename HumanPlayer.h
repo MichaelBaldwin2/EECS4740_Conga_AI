@@ -1,10 +1,14 @@
 #pragma once
 
 #include "Agent.h"
+#include "Vector2Int.h"
 
 class HumanPlayer : public Agent
 {
+private:
+	Vector2Int selectedCell;
 
 public:
-	Move GetMove(Board& board);
+	HumanPlayer();
+	Move GetMove(Board& board, SDL_MouseButtonEvent& mb);
 };

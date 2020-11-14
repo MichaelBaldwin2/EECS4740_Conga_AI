@@ -18,6 +18,7 @@ public:
 	int GetY() const;
 	int GetWidth() const;
 	int GetHeight() const;
+	bool IsWithin(Vector2Int point);
 
 	explicit operator SDL_Rect() const;
 };

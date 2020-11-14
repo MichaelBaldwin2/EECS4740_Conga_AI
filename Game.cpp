@@ -74,7 +74,7 @@ void Game::Loop()
 	{
 		if(Time::RealTimeSinceStartup() >= nextUpdate)
 		{
-			nextUpdate = Time::RealTimeSinceStartup() + 1.0f;
+			nextUpdate = Time::RealTimeSinceStartup() + .016f;
 			Time::UpdateLogicDeltaTime();
 			UpdateTick(Time::LogicDeltaTime());
 			updateFPS++;
@@ -97,7 +97,7 @@ void Game::Loop()
 void Game::UpdateTick(float deltaTime)
 {
 	SDL_Event e;
-	Move nextMove = Move();
+	SDL_MouseButtonEvent mb;
 
 	while(SDL_PollEvent(&e) != 0)
 	{
@@ -105,21 +105,25 @@ void Game::UpdateTick(float deltaTime)
 		{
 			isRunning = false;
 		}
+		if(e.type == SDL_MOUSEBUTTONUP)
+		{
+			mb = e.button;
+		}
 	}
 
 	// Check if current player lost
 	if(board.CheckLoss((player == whitePlayer))) {
 		std::cout << player->name << " has lost." << std::endl;
-		exit(0);
+		isRunning = false;
 	}
 
 	// Get and make next move
-	nextMove = player->GetMove(board);
+	auto nextMove = player->GetMove(board, mb);
 
-	if (Game::CheckInput(nextMove.x, nextMove.y, nextMove.direction))
+	if (board.CheckInput((player == whitePlayer), nextMove.x, nextMove.y, nextMove.direction))
 	{
 		// Move stones and print board
-		Game::MoveStones(nextMove.x, nextMove.y, nextMove.direction);
+		board.MoveStones(player == whitePlayer, nextMove.x, nextMove.y, nextMove.direction);
 		board.PrintBoardToConsole();
 
 		// Change current player
@@ -167,21 +171,6 @@ void Game::RenderTick(float deltaTime)
 					spriteBatch.Draw(Sprite(blackStoneTexture), position, Color::White, 0, Vector2::Zero, Vector2::One, SpriteFlip::None, 0.5f);
 				}
 			}
-
-			/*for(auto i = 0; i < whiteStoneCount; i++)
-			{
-				auto flipType = std::rand() % 3;
-				auto spriteFlip = flipType == 0 ? SpriteFlip::None : flipType == 1 ? SpriteFlip::Horizontal : SpriteFlip::Vertical;
-				auto position = Vector2((75 + (x * 144)) + (std::rand() % 64), (75 + (y * 144)) + (std::rand() % 64));
-				spriteBatch.Draw(Sprite(whiteStoneTexture), position, Color::White, 0, Vector2::Zero, Vector2::One, spriteFlip, 0.5f);
-			}
-			for(auto i = 0; i < blackStoneCount; i++)
-			{
-				auto flipType = std::rand() % 3;
-				auto spriteFlip = flipType == 0 ? SpriteFlip::None : flipType == 1 ? SpriteFlip::Horizontal : SpriteFlip::Vertical;
-				auto position = Vector2((75 + (x * 144)) + (std::rand() % 64), (75 + (y * 144)) + (std::rand() % 64));
-				spriteBatch.Draw(Sprite(blackStoneTexture), position, Color::White, 0, Vector2::Zero, Vector2::One, spriteFlip, 0.5f);
-			}*/
 		}
 	}
 
@@ -192,271 +181,4 @@ void Game::RenderTick(float deltaTime)
 Board* Game::GetBoard()
 {
 	return &board;
-}
-
-/*
-bool Game::CheckLoss()
-{
-	const int directions[] = {
-		85,		// Up
-		68,		// Down
-		76,		// Left
-		82,		// Right
-		165,	// Northwest
-		147,	// Northeast
-		170,	// Southwest
-		152		// Southeast
-	};
-
-	for(int y = 0; y < 4; y++)
-	{
-		for(int x = 0; x < 4; x++)
-		{
-			int count = board.GetStoneCount((player == whitePlayer), x, y);
-			if(count <= 0)
-			{
-				continue;
-			}
-			else
-			{
-				for(int i = 0; i < 8; i++)
-				{
-					if(board.CheckInput((player == whitePlayer), x, y, directions[i]) == true)
-					{
-						return false;
-					}
-				}
-			}
-		}
-	}
-
-	return true;
-}
-*/
-
-bool Game::CheckInput(int x, int y, int direction)
-{
-	const int validDirections[] = {
-		85, 117,	// Up
-		68, 100,	// Down
-		76, 108,	// Left
-		82, 114,	// Right
-		165, 229,	// Northwest
-		147, 211,	// Northeast
-		170, 234,	// Southwest
-		152, 216,	// Southeast
-		-1
-	};
-	bool white = (player == whitePlayer);
-
-	if(x < 0 || x > 3)
-	{
-		std::cout << "ERROR: Please enter a valid x coordinate." << std::endl;
-		return false;
-	}
-	if(y < 0 || y > 3)
-	{
-		std::cout << "ERROR: Please enter a valid y coordinate." << std::endl;
-		return false;
-	}
-	if(std::find(std::begin(validDirections), std::end(validDirections), direction) == std::end(validDirections))
-	{
-		std::cout << "ERROR: Please enter a valid direction." << std::endl;
-		return false;
-	}
-	if(board.GetStoneCount(white, x, y) == 0)
-	{
-		std::cout << "ERROR: Must select current player's stones." << std::endl;
-		return false;
-	}
-	// Up
-	if(direction == 85 || direction == 117)
-	{
-		return (board.GetStoneCount(!white, x, y - 1) == 0);
-	}
-	// Down
-	else if(direction == 68 || direction == 100)
-	{
-		return (board.GetStoneCount(!white, x, y + 1) == 0);
-	}
-	// Left
-	else if(direction == 76 || direction == 108)
-	{
-		return (board.GetStoneCount(!white, x - 1, y) == 0);
-	}
-	// Right
-	else if(direction == 82 || direction == 114)
-	{
-		return (board.GetStoneCount(!white, x + 1, y) == 0);
-	}
-	// Northwest
-	else if(direction == 165 || direction == 229)
-	{
-		return (board.GetStoneCount(!white, x - 1, y - 1) == 0);
-	}
-	// Northeast
-	else if(direction == 147 || direction == 211)
-	{
-		return (board.GetStoneCount(!white, x + 1, y - 1) == 0);
-	}
-	// Southwest
-	else if(direction == 170 || direction == 234)
-	{
-		return (board.GetStoneCount(!white, x - 1, y + 1) == 0);
-	}
-	// Southeast
-	else if(direction == 152 || direction == 216)
-	{
-		return (board.GetStoneCount(!white, x + 1, y + 1) == 0);
-	}
-	else
-	{
-		return false;
-	}
-}
-
-void Game::MoveStones(int x, int y, int direction)
-{
-	bool white = (player == whitePlayer);
-	int numStones = board.RemoveStones(white, x, y);
-	int freeSpaces = 0;
-	int addX[3], addY[3];
-
-	// Determine number of free spaces
-	for(int i = 1; i < 4; i++)
-	{
-		// Up
-		if(direction == 85 || direction == 117)
-		{
-			if(board.GetStoneCount(!white, x, y - i) == 0)
-			{
-				freeSpaces++;
-			}
-			else
-			{
-				break;
-			}
-			addX[i - 1] = x;
-			addY[i - 1] = y - i;
-		}
-		// Down
-		else if(direction == 68 || direction == 100)
-		{
-			if(board.GetStoneCount(!white, x, y + i) == 0)
-			{
-				freeSpaces++;
-			}
-			else
-			{
-				break;
-			}
-			addX[i - 1] = x;
-			addY[i - 1] = y + i;
-		}
-		// Left
-		else if(direction == 76 || direction == 108)
-		{
-			if(board.GetStoneCount(!white, x - i, y) == 0)
-			{
-				freeSpaces++;
-			}
-			else
-			{
-				break;
-			}
-			addX[i - 1] = x - i;
-			addY[i - 1] = y;
-		}
-		// Right
-		else if(direction == 82 || direction == 114)
-		{
-			if(board.GetStoneCount(!white, x + i, y) == 0)
-			{
-				freeSpaces++;
-			}
-			else
-			{
-				break;
-			}
-			addX[i - 1] = x + i;
-			addY[i - 1] = y;
-		}
-		// Northwest
-		if(direction == 165 || direction == 229)
-		{
-			if(board.GetStoneCount(!white, x - i, y - i) == 0)
-			{
-				freeSpaces++;
-			}
-			else
-			{
-				break;
-			}
-			addX[i - 1] = x - i;
-			addY[i - 1] = y - i;
-		}
-		// Northeast
-		else if(direction == 147 || direction == 211)
-		{
-			if(board.GetStoneCount(!white, x + i, y - i) == 0)
-			{
-				freeSpaces++;
-			}
-			else
-			{
-				break;
-			}
-			addX[i - 1] = x + i;
-			addY[i - 1] = y - i;
-		}
-		// Southwest
-		else if(direction == 170 || direction == 234)
-		{
-			if(board.GetStoneCount(!white, x - i, y + i) == 0)
-			{
-				freeSpaces++;
-			}
-			else
-			{
-				break;
-			}
-			addX[i - 1] = x - i;
-			addY[i - 1] = y + i;
-		}
-		// Southeast
-		else if(direction == 152 || direction == 216)
-		{
-			if(board.GetStoneCount(!white, x + i, y + i) == 0)
-			{
-				freeSpaces++;
-			}
-			else
-			{
-				break;
-			}
-			addX[i - 1] = x + i;
-			addY[i - 1] = y + i;
-		}
-	}
-
-	// Place stones in correct spaces
-	switch(freeSpaces)
-	{
-		case 1:
-			board.AddStones(white, addX[0], addY[0], numStones);
-			break;
-		case 2:
-			board.AddStones(white, addX[0], addY[0], 1);
-			numStones--;
-			if(numStones > 0) { board.AddStones(white, addX[1], addY[1], numStones); }
-			break;
-		case 3:
-			board.AddStones(white, addX[0], addY[0], 1);
-			numStones--;
-			if(numStones >= 2) { board.AddStones(white, addX[1], addY[1], 2); }
-			else { board.AddStones(white, addX[1], addY[1], numStones); }
-			numStones -= 2;
-			if(numStones > 0) { board.AddStones(white, addX[2], addY[2], numStones); }
-			break;
-	}
 }

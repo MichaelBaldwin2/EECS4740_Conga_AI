@@ -127,7 +127,11 @@ bool Board::CheckInput(bool white, int x, int y, int direction)
 	}
 	if (std::find(std::begin(validDirections), std::end(validDirections), direction) == std::end(validDirections))
 	{
-		std::cout << "ERROR: Please enter a valid direction." << std::endl;
+		// TODO This is a shit solution
+		if(direction != -1)
+		{
+			std::cout << "ERROR: Please enter a valid direction." << std::endl;
+		}
 		return false;
 	}
 	if (GetStoneCount(white, x, y) == 0)

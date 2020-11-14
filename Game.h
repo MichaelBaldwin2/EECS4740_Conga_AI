@@ -29,9 +29,4 @@ public:
 	void UpdateTick(float deltaTime);
 	void RenderTick(float deltaTime);
 	Board* GetBoard();
-
-private:
-	//bool CheckLoss();
-	bool CheckInput(int x, int y, int direction);
-	void MoveStones(int x, int y, int direction);
 };

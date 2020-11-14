@@ -3,7 +3,7 @@
 #include <random>
 #include <iostream>
 
-Move RandomPlayer::GetMove(Board& board) {
+Move RandomPlayer::GetMove(Board& board, SDL_MouseButtonEvent& mb) {
 	bool validMove = false;
 	const int directions[] = {
 		85,		// Up
