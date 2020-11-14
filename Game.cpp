@@ -15,7 +15,7 @@
 
 Agent* player;
 
-Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), boardTexture(), blackStoneTexture(), whiteStoneTexture(), blackPlayer(new RandomPlayer()), whitePlayer(new AIPlayer()), computerPlayerTick() {}
+Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), boardTexture(), blackStoneTexture(), whiteStoneTexture(), blackPlayer(new RandomPlayer()), whitePlayer(new AIPlayer()), arialFontTexture(), arialFont(), updateFPS(), renderFPS() {}
 
 Game::~Game()
 {
@@ -48,6 +48,8 @@ bool Game::Init()
 	boardTexture = Texture(renderer, "Board.png");
 	blackStoneTexture = Texture(renderer, "BlackStone.png");
 	whiteStoneTexture = Texture(renderer, "WhiteStone.png");
+	arialFontTexture = Texture(renderer, "Arial.png");
+	arialFont = SpriteFont(arialFontTexture, 16, 16, 256);
 
 	// Initialize board and add starting stones
 	board = Board();
@@ -68,8 +70,8 @@ void Game::Loop()
 	Time::UpdateRenderDeltaTime();
 	float nextUpdate = Time::RealTimeSinceStartup();
 	float nextFpsRender = Time::RealTimeSinceStartup();
-	int updateFPS = 0;
-	int renderFPS = 0;
+	int upsCount = 0;
+	int fpsCount = 0;
 	float delay = 0.1f;
 	if(typeid(*blackPlayer) == typeid(HumanPlayer))
 	{
@@ -83,19 +85,22 @@ void Game::Loop()
 			nextUpdate = Time::RealTimeSinceStartup() + delay;
 			Time::UpdateLogicDeltaTime();
 			UpdateTick(Time::LogicDeltaTime());
-			updateFPS++;
+			upsCount++;
 		}
 
 		Time::UpdateRenderDeltaTime();
 		RenderTick(Time::RenderDeltaTime());
-		renderFPS++;
+		fpsCount++;
 
+		// Render the fps to the console
 		if(Time::RealTimeSinceStartup() >= nextFpsRender)
 		{
 			nextFpsRender = Time::RealTimeSinceStartup() + 1.0f;
 			spdlog::info("FPS: {0}({1:.4f}):{2}({3:.4f})", updateFPS, Time::LogicDeltaTime(), renderFPS, Time::RenderDeltaTime());
-			updateFPS = 0;
-			renderFPS = 0;
+			updateFPS = upsCount;
+			renderFPS = fpsCount;
+			upsCount = 0;
+			fpsCount = 0;
 		}
 	}
 }
@@ -151,7 +156,7 @@ void Game::RenderTick(float deltaTime)
 	spriteBatch.Begin();
 
 	// All the sprite rendering happens here
-	spriteBatch.Draw(Sprite(boardTexture), Vector2::Zero, Color::White, 0, Vector2::Zero, Vector2::One, SpriteFlip::None, 0.25f);
+	spriteBatch.Draw(Sprite(boardTexture), Vector2::Zero, Color::White, 0, Vector2::Zero, Vector2::One, SpriteFlip::None, 0.5f);
 
 	// Draw the stones
 	for(auto y = 0; y < 4; y++)
@@ -166,7 +171,7 @@ void Game::RenderTick(float deltaTime)
 				for(auto drawX = 0; drawX < 64 && i < whiteStoneCount; drawX += 16, i++)
 				{
 					auto position = Vector2((75 + (x * 144)) + drawX, (75 + (y * 144)) + drawY);
-					spriteBatch.Draw(Sprite(whiteStoneTexture), position, Color::White, 0, Vector2::Zero, Vector2::One, SpriteFlip::None, 0.5f);
+					spriteBatch.Draw(Sprite(whiteStoneTexture), position, Color::White, 0, Vector2::Zero, Vector2::One, SpriteFlip::None, 0.25f);
 				}
 			}
 			for(int drawY = 0, i = 0; drawY < 64 && i < blackStoneCount; drawY += 16)
@@ -174,11 +179,15 @@ void Game::RenderTick(float deltaTime)
 				for(auto drawX = 0; drawX < 64 && i < blackStoneCount; drawX += 16, i++)
 				{
 					auto position = Vector2((75 + (x * 144)) + drawX, (75 + (y * 144)) + drawY);
-					spriteBatch.Draw(Sprite(blackStoneTexture), position, Color::White, 0, Vector2::Zero, Vector2::One, SpriteFlip::None, 0.5f);
+					spriteBatch.Draw(Sprite(blackStoneTexture), position, Color::White, 0, Vector2::Zero, Vector2::One, SpriteFlip::None, 0.25f);
 				}
 			}
 		}
 	}
+
+	// Render the GUI
+	spriteBatch.DrawString("FPS:" + std::to_string(renderFPS), arialFont, Vector2::Zero);
+	spriteBatch.DrawString("UPS:" + std::to_string(updateFPS), arialFont, Vector2(0, 16));
 
 	spriteBatch.End();
 	renderer.PresentScreen();

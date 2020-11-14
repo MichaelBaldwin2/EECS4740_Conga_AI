@@ -30,7 +30,7 @@ void SpriteBatch::End()
 	//Sort by depth and then texture
 	std::sort(infos.begin(), infos.end(), [](const auto& first, const auto& second)
 		{
-			return first.depth < second.depth;
+			return first.depth > second.depth;
 			//if(first.depth < second.depth)
 			//{
 			//	return true;
@@ -72,4 +72,13 @@ void SpriteBatch::Draw(const Sprite sprite, const Vector2 position, const Color 
 {
 	SpriteInfo info{ sprite, position, color, rotation, origin, scale, flip, depth };
 	infos.push_back(info);
+}
+
+void SpriteBatch::DrawString(std::string text, SpriteFont spriteFont, Vector2 position, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteFlip flip, float depth)
+{
+	for(auto c = 0, x = 0, y = 0; c < text.length(); c++, x += spriteFont.GetFontWidth() / 2)
+	{
+		auto sprite = spriteFont.GetSprite(text[c]);
+		Draw(sprite, position + Vector2(x, y), Color::White, rotation, Vector2::Zero, Vector2::One, SpriteFlip::None, 0);
+	}
 }

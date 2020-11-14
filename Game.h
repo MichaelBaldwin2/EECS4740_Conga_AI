@@ -5,6 +5,7 @@
 #include "Renderer.h"
 #include "Texture.h"
 #include "SpriteBatch.h"
+#include "SpriteFont.h"
 #include "Window.h"
 
 class Game
@@ -20,7 +21,10 @@ private:
 	Texture whiteStoneTexture;
 	Agent* blackPlayer;
 	Agent* whitePlayer;
-	float computerPlayerTick;
+	Texture arialFontTexture;
+	SpriteFont arialFont;
+	int updateFPS;
+	int renderFPS;
 
 public:
 	Game();

@@ -4,6 +4,7 @@
 #include "Renderer.h"
 #include "Sprite.h"
 #include "SpriteFlip.h"
+#include "SpriteFont.h"
 #include "Vector2.h"
 #include <vector>
 
@@ -34,4 +35,5 @@ public:
 	void Begin();
 	void End();
 	void Draw(Sprite sprite, Vector2 position, Color color = Color::White, float rotation = 0, Vector2 origin = Vector2::Zero, Vector2 scale = Vector2::One, SpriteFlip flip = SpriteFlip::None, float depth = 0.0f);
+	void DrawString(std::string text, SpriteFont spriteFont, Vector2 position, Color color = Color::White, float rotation = 0, Vector2 origin = Vector2::Zero, Vector2 scale = Vector2::One, SpriteFlip flip = SpriteFlip::None, float depth = 0.0f);
 };
