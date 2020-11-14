@@ -139,6 +139,7 @@ void Game::UpdateTick(float deltaTime)
 			if(RectInt(784, 0, 64, 64).IsWithin(Vector2Int(e.button.x, e.button.y)))
 			{
 				spdlog::info("Step button was pressed!");
+				pauseSim = true;
 				singleStep = true;
 			}
 		}
