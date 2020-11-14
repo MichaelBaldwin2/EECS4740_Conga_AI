@@ -54,6 +54,7 @@ bool Game::Init()
 	playButton = Texture(renderer, "Play_Button.png");
 	pauseButton = Texture(renderer, "Pause_Button.png");
 	stepButton = Texture(renderer, "Step_Button.png");
+	resetButton = Texture(renderer, "Reset_Button.png");
 
 	// Initialize board and add starting stones
 	board = Board();
@@ -142,6 +143,23 @@ void Game::UpdateTick(float deltaTime)
 				pauseSim = true;
 				singleStep = true;
 			}
+			if(RectInt(848, 0, 64, 64).IsWithin(Vector2Int(e.button.x, e.button.y)))
+			{
+				spdlog::info("Reset button was pressed!");
+				pauseSim = true;
+				board = Board();
+				board.AddStones(false, 0, 0, 10);
+				board.AddStones(true, 3, 3, 10);
+
+				// Set player names and start player
+				delete whitePlayer;
+				delete blackPlayer;
+				blackPlayer = new RandomPlayer();
+				whitePlayer = new AIPlayer();
+				blackPlayer->name = "Black";
+				whitePlayer->name = "White";
+				player = blackPlayer;
+			}
 		}
 	}
 
@@ -220,7 +238,7 @@ void Game::RenderTick(float deltaTime)
 	spriteBatch.Draw(pauseButton, Vector2(656, 0));
 	spriteBatch.Draw(playButton, Vector2(720, 0));
 	spriteBatch.Draw(stepButton, Vector2(784, 0));
-
+	spriteBatch.Draw(resetButton, Vector2(848, 0));
 
 	// Render FPS and UPS
 	spriteBatch.DrawString("FPS:" + std::to_string(renderFPS), arialFont, Vector2::Zero);

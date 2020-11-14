@@ -28,6 +28,7 @@ private:
 	Texture playButton;
 	Texture pauseButton;
 	Texture stepButton;
+	Texture resetButton;
 	bool pauseSim;
 
 public:
