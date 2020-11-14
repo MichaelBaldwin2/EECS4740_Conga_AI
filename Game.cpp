@@ -70,7 +70,7 @@ void Game::Loop()
 	float nextFpsRender = Time::RealTimeSinceStartup();
 	int updateFPS = 0;
 	int renderFPS = 0;
-	float delay = 1.f;
+	float delay = 0.1f;
 	if(typeid(*blackPlayer) == typeid(HumanPlayer))
 	{
 		delay = 0.016f;

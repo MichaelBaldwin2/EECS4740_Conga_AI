@@ -4,7 +4,7 @@
 
 Move AIPlayer::GetMove(Board& board, SDL_MouseButtonEvent& mb) {
 	Move move = Move();
-	return Minimax({ board, {0, 0, 0}, 0 }, 1, true).move;
+	return Minimax({ board, {3, 3, -1}, 0 }, 3, true).move;
 }
 
 BoardState AIPlayer::Minimax(BoardState state, int depth, bool player)
@@ -42,7 +42,7 @@ BoardState AIPlayer::Minimax(BoardState state, int depth, bool player)
 			boardWithMove.MoveStones(player, moves[i].x, moves[i].y, moves[i].direction);
 			auto eval = Minimax({ boardWithMove, moves[i], 0 }, depth - 1, !player);
 
-			if (minEval.evalValue <= eval.evalValue) {
+			if (eval.evalValue <= minEval.evalValue) {
 				minEval = { boardWithMove, moves[i], eval.evalValue };
 			}
 		}
@@ -50,6 +50,7 @@ BoardState AIPlayer::Minimax(BoardState state, int depth, bool player)
 	}
 }
 
+// TODO FIX THIS
 int AIPlayer::GetEvalValue(bool player, Board board) {
 	// Evaluation value is number of spaces adjacent to opponent
 	int count = 0;
