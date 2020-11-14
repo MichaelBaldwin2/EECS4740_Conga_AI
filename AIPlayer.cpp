@@ -50,7 +50,12 @@ BoardState AIPlayer::Minimax(BoardState state, int depth, bool player)
 	}
 }
 
-// TODO FIX THIS
+int AIPlayer::GetEvalValue(bool player, Board board) {
+	// # opponent moves - # player moves
+	return GetMoves(!player, board).size() - GetMoves(player, board).size();
+}
+
+/*
 int AIPlayer::GetEvalValue(bool player, Board board) {
 	// Evaluation value is number of spaces adjacent to opponent
 	int count = 0;
@@ -91,6 +96,7 @@ int AIPlayer::GetEvalValue(bool player, Board board) {
 
 	return count;
 }
+*/
 
 std::vector<Move> AIPlayer::GetMoves(bool player, Board board) {
 	std::vector<Move> possibleMoves;
