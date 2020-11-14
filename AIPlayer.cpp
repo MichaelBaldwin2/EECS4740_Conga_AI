@@ -4,13 +4,18 @@
 
 Move AIPlayer::GetMove(Board& board, SDL_MouseButtonEvent& mb) {
 	Move move = Move();
-	return Minimax({ board, {3, 3, -1}, 0 }, 3, true).move;
+	move = Minimax({ board, {3, 3, -1}, 0 }, 3, true).move;
+	totalDepth += 3;
+	std::cout << "Search Depth: " << totalDepth << std::endl;
+	//std::cout << "Total Nodes Explored: " << totalNodes << std::endl;
+	return move;
 }
 
 BoardState AIPlayer::Minimax(BoardState state, int depth, bool player)
 {
 	if(depth == 0 || state.board.CheckLoss(player))
 	{
+		//totalNodes++;
 		state.evalValue = GetEvalValue(player, state.board);
 		return state;
 	}
@@ -24,6 +29,7 @@ BoardState AIPlayer::Minimax(BoardState state, int depth, bool player)
 			auto boardWithMove = state.board;
 			boardWithMove.MoveStones(player, moves[i].x, moves[i].y, moves[i].direction);
 			auto eval = Minimax({ boardWithMove, moves[i], 0 }, depth - 1, !player);
+			//totalNodes++;
 
 			if(eval.evalValue >= maxEval.evalValue)
 			{
@@ -41,6 +47,7 @@ BoardState AIPlayer::Minimax(BoardState state, int depth, bool player)
 			auto boardWithMove = state.board;
 			boardWithMove.MoveStones(player, moves[i].x, moves[i].y, moves[i].direction);
 			auto eval = Minimax({ boardWithMove, moves[i], 0 }, depth - 1, !player);
+			//totalNodes++;
 
 			if (eval.evalValue <= minEval.evalValue) {
 				minEval = { boardWithMove, moves[i], eval.evalValue };

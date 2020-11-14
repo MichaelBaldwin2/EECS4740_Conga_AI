@@ -15,6 +15,7 @@
 #include <typeinfo>
 
 Agent* player;
+int totalMoves = 0;
 
 Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), boardTexture(), blackStoneTexture(), whiteStoneTexture(), blackPlayer(new RandomPlayer()), whitePlayer(new AIPlayer()), arialFontTexture(), arialFont(), updateFPS(), renderFPS(), playButton(), pauseButton(), stepButton(), pauseSim(true) {}
 
@@ -159,6 +160,7 @@ void Game::UpdateTick(float deltaTime)
 				blackPlayer->name = "Black";
 				whitePlayer->name = "White";
 				player = blackPlayer;
+				totalMoves = 0;
 			}
 		}
 	}
@@ -179,7 +181,8 @@ void Game::UpdateTick(float deltaTime)
 		{
 			// Move stones and print board
 			board.MoveStones(player == whitePlayer, nextMove.x, nextMove.y, nextMove.direction);
-			//board.PrintBoardToConsole();
+			totalMoves++;
+			std::cout << "Total Moves: " << totalMoves << std::endl;
 
 			// Change current player
 			switch(player == blackPlayer)
