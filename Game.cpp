@@ -3,6 +3,7 @@
 #include "RandomPlayer.h"
 #include "HumanPlayer.h"
 #include "AIPlayer.h"
+#include "RectInt.h"
 #include "Renderer.h"
 #include "Time.h"
 #include "Window.h"
@@ -15,7 +16,7 @@
 
 Agent* player;
 
-Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), boardTexture(), blackStoneTexture(), whiteStoneTexture(), blackPlayer(new RandomPlayer()), whitePlayer(new AIPlayer()), arialFontTexture(), arialFont(), updateFPS(), renderFPS() {}
+Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), boardTexture(), blackStoneTexture(), whiteStoneTexture(), blackPlayer(new RandomPlayer()), whitePlayer(new AIPlayer()), arialFontTexture(), arialFont(), updateFPS(), renderFPS(), playButton(), pauseButton(), stepButton(), pauseSim(true) {}
 
 Game::~Game()
 {
@@ -50,6 +51,9 @@ bool Game::Init()
 	whiteStoneTexture = Texture(renderer, "WhiteStone.png");
 	arialFontTexture = Texture(renderer, "Arial.png");
 	arialFont = SpriteFont(arialFontTexture, 16, 16, 256);
+	playButton = Texture(renderer, "Play_Button.png");
+	pauseButton = Texture(renderer, "Pause_Button.png");
+	stepButton = Texture(renderer, "Step_Button.png");
 
 	// Initialize board and add starting stones
 	board = Board();
@@ -109,6 +113,7 @@ void Game::UpdateTick(float deltaTime)
 {
 	SDL_Event e;
 	SDL_MouseButtonEvent mb;
+	bool singleStep = false;
 
 	while(SDL_PollEvent(&e) != 0)
 	{
@@ -119,33 +124,56 @@ void Game::UpdateTick(float deltaTime)
 		if(e.type == SDL_MOUSEBUTTONUP)
 		{
 			mb = e.button;
+
+			// We need to check the buttons
+			if(RectInt(656, 0, 64, 64).IsWithin(Vector2Int(e.button.x, e.button.y)))
+			{
+				spdlog::info("Pause button was pressed!");
+				pauseSim = true;
+			}
+			if(RectInt(720, 0, 64, 64).IsWithin(Vector2Int(e.button.x, e.button.y)))
+			{
+				spdlog::info("Play button was pressed!");
+				pauseSim = false;
+			}
+			if(RectInt(784, 0, 64, 64).IsWithin(Vector2Int(e.button.x, e.button.y)))
+			{
+				spdlog::info("Step button was pressed!");
+				singleStep = true;
+			}
 		}
 	}
 
-	// Check if current player lost
-	if(board.CheckLoss((player == whitePlayer))) {
-		std::cout << player->name << " has lost." << std::endl;
-		isRunning = false;
-	}
-
-	// Get and make next move
-	auto nextMove = player->GetMove(board, mb);
-
-	if (board.CheckInput((player == whitePlayer), nextMove.x, nextMove.y, nextMove.direction))
+	if(pauseSim == false || singleStep == true)
 	{
-		// Move stones and print board
-		board.MoveStones(player == whitePlayer, nextMove.x, nextMove.y, nextMove.direction);
-		board.PrintBoardToConsole();
-
-		// Change current player
-		switch (player == blackPlayer)
+		// Check if current player lost
+		if(board.CheckLoss((player == whitePlayer)))
 		{
-		case false:
-			player = blackPlayer;
-			break;
-		case true:
-			player = whitePlayer;
-			break;
+			std::cout << player->name << " has lost." << std::endl;
+			isRunning = false;
+		}
+
+		// Get and make next move
+		auto nextMove = player->GetMove(board, mb);
+
+		if(board.CheckInput((player == whitePlayer), nextMove.x, nextMove.y, nextMove.direction))
+		{
+			// Move stones and print board
+			board.MoveStones(player == whitePlayer, nextMove.x, nextMove.y, nextMove.direction);
+			//board.PrintBoardToConsole();
+
+			// Change current player
+			switch(player == blackPlayer)
+			{
+				case false:
+					player = blackPlayer;
+					break;
+				case true:
+					player = whitePlayer;
+					break;
+			}
+
+			singleStep = false;
 		}
 	}
 }
@@ -186,6 +214,14 @@ void Game::RenderTick(float deltaTime)
 	}
 
 	// Render the GUI
+
+	//Render Pause, Play, and Step buttons
+	spriteBatch.Draw(pauseButton, Vector2(656, 0));
+	spriteBatch.Draw(playButton, Vector2(720, 0));
+	spriteBatch.Draw(stepButton, Vector2(784, 0));
+
+
+	// Render FPS and UPS
 	spriteBatch.DrawString("FPS:" + std::to_string(renderFPS), arialFont, Vector2::Zero);
 	spriteBatch.DrawString("UPS:" + std::to_string(updateFPS), arialFont, Vector2(0, 16));
 

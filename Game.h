@@ -25,6 +25,10 @@ private:
 	SpriteFont arialFont;
 	int updateFPS;
 	int renderFPS;
+	Texture playButton;
+	Texture pauseButton;
+	Texture stepButton;
+	bool pauseSim;
 
 public:
 	Game();
