@@ -11,10 +11,11 @@
 #include <spdlog/spdlog.h>
 #include <iostream>
 #include <string>
+#include <typeinfo>
 
 Agent* player;
 
-Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), boardTexture(), blackStoneTexture(), whiteStoneTexture(), blackPlayer(new RandomPlayer()), whitePlayer(new AIPlayer()) {}
+Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), boardTexture(), blackStoneTexture(), whiteStoneTexture(), blackPlayer(new RandomPlayer()), whitePlayer(new AIPlayer()), computerPlayerTick() {}
 
 Game::~Game()
 {
@@ -69,12 +70,17 @@ void Game::Loop()
 	float nextFpsRender = Time::RealTimeSinceStartup();
 	int updateFPS = 0;
 	int renderFPS = 0;
+	float delay = 1.f;
+	if(typeid(*blackPlayer) == typeid(HumanPlayer))
+	{
+		delay = 0.016f;
+	}
 
 	while(isRunning)
 	{
 		if(Time::RealTimeSinceStartup() >= nextUpdate)
 		{
-			nextUpdate = Time::RealTimeSinceStartup() + 0.1f;
+			nextUpdate = Time::RealTimeSinceStartup() + delay;
 			Time::UpdateLogicDeltaTime();
 			UpdateTick(Time::LogicDeltaTime());
 			updateFPS++;

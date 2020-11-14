@@ -20,6 +20,7 @@ private:
 	Texture whiteStoneTexture;
 	Agent* blackPlayer;
 	Agent* whitePlayer;
+	float computerPlayerTick;
 
 public:
 	Game();
