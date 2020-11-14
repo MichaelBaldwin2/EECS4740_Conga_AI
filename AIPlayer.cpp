@@ -4,7 +4,7 @@
 
 Move AIPlayer::GetMove(Board& board, SDL_MouseButtonEvent& mb) {
 	Move move = Move();
-	return Minimax({ board, {0, 0, 0}, 0 }, 3, true).move;
+	return Minimax({ board, {0, 0, 0}, 0 }, 1, true).move;
 }
 
 BoardState AIPlayer::Minimax(BoardState state, int depth, bool player)

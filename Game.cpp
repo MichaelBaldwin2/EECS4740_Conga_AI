@@ -14,7 +14,7 @@
 
 Agent* player;
 
-Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), boardTexture(), blackStoneTexture(), whiteStoneTexture(), blackPlayer(new HumanPlayer()), whitePlayer(new AIPlayer()) {}
+Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), boardTexture(), blackStoneTexture(), whiteStoneTexture(), blackPlayer(new RandomPlayer()), whitePlayer(new AIPlayer()) {}
 
 Game::~Game()
 {
@@ -74,7 +74,7 @@ void Game::Loop()
 	{
 		if(Time::RealTimeSinceStartup() >= nextUpdate)
 		{
-			nextUpdate = Time::RealTimeSinceStartup() + .016f;
+			nextUpdate = Time::RealTimeSinceStartup() + 0.1f;
 			Time::UpdateLogicDeltaTime();
 			UpdateTick(Time::LogicDeltaTime());
 			updateFPS++;
