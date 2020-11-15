@@ -154,6 +154,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
+    <ClCompile Include="Button.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="HumanPlayer.cpp" />
@@ -176,6 +177,7 @@
     <ClInclude Include="Agent.h" />
     <ClInclude Include="Board.h" />
     <ClInclude Include="BoardState.h" />
+    <ClInclude Include="Button.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="AIPlayer.h" />

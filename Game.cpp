@@ -16,15 +16,20 @@
 
 Agent* player;
 
-Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), boardTexture(), blackStoneTexture(), whiteStoneTexture(), blackPlayer(new RandomPlayer()), whitePlayer(new AIPlayer()), arialFontTexture(), arialFont(), updateFPS(), renderFPS(), playButton(), pauseButton(), stepButton(), pauseSim(true), totalMoves(0), timeTaken(0) {}
+Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), textures(), arialFont(), pauseButton(), playButton(), stepButton(), resetButton(), blackPlayer(new RandomPlayer()), whitePlayer(new AIPlayer()), updateFPS(), renderFPS(), pauseSim(true), totalMoves(0), timeTaken(0) {}
 
 Game::~Game()
 {
 	delete whitePlayer;
 	delete blackPlayer;
-	boardTexture.Free();
-	blackStoneTexture.Free();
-	whiteStoneTexture.Free();
+
+	// Clear all the textures
+	for(auto it = textures.begin(); it != textures.end(); it++)
+	{
+		it->second.Free();
+	}
+
+	textures.clear();
 	renderer.Free();
 	window.Free();
 }
@@ -46,15 +51,20 @@ bool Game::Init()
 	spriteBatch = SpriteBatch(renderer);
 
 	// Load up the board, stones, and font textures
-	boardTexture = Texture(renderer, "Board.png");
-	blackStoneTexture = Texture(renderer, "BlackStone.png");
-	whiteStoneTexture = Texture(renderer, "WhiteStone.png");
-	arialFontTexture = Texture(renderer, "Arial.png");
-	arialFont = SpriteFont(arialFontTexture, 16, 16, 256);
-	playButton = Texture(renderer, "Play_Button.png");
-	pauseButton = Texture(renderer, "Pause_Button.png");
-	stepButton = Texture(renderer, "Step_Button.png");
-	resetButton = Texture(renderer, "Reset_Button.png");
+	textures["Board"] = Texture(renderer, "gfx/Board.png");
+	textures["BlackStone"] = Texture(renderer, "gfx/BlackStone.png");
+	textures["WhiteStone"] = Texture(renderer, "gfx/WhiteStone.png");
+	textures["Arial"] = Texture(renderer, "gfx/Arial.png");
+	textures["PauseButton"] = Texture(renderer, "gfx/PauseButton.png");
+	textures["PlayButton"] = Texture(renderer, "gfx/PlayButton.png");
+	textures["StepButton"] = Texture(renderer, "gfx/StepButton.png");
+	textures["ResetButton"] = Texture(renderer, "gfx/ResetButton.png");
+
+	arialFont = SpriteFont(textures["Arial"], 16, 16, 256);
+	pauseButton = Button(RectInt(656, 0, 64, 64), Sprite(textures["PauseButton"]), Color(128, 128, 128));
+	playButton = Button(RectInt(720, 0, 64, 64), Sprite(textures["PlayButton"]), Color(128, 128, 128));
+	stepButton = Button(RectInt(784, 0, 64, 64), Sprite(textures["StepButton"]), Color(128, 128, 128));
+	resetButton = Button(RectInt(848, 0, 64, 64), Sprite(textures["ResetButton"]), Color(128, 128, 128));
 
 	// Initialize board and add starting stones
 	board = Board();
@@ -77,7 +87,7 @@ void Game::Loop()
 	float nextFpsRender = Time::RealTimeSinceStartup();
 	int upsCount = 0;
 	int fpsCount = 0;
-	float delay = 0.01f;
+	float delay = 0.1f;
 	if(typeid(*blackPlayer) == typeid(HumanPlayer))
 	{
 		delay = 0.016f;
@@ -122,30 +132,46 @@ void Game::UpdateTick(float deltaTime)
 		{
 			isRunning = false;
 		}
+		if(e.type == SDL_MOUSEBUTTONDOWN)
+		{
+			// We need to check the buttons
+			if(pauseButton.ContainsPoint(Vector2Int(e.button.x, e.button.y)))
+			{
+				pauseButton.OnDown();
+			}
+			if(playButton.ContainsPoint(Vector2Int(e.button.x, e.button.y)))
+			{
+				playButton.OnDown();
+			}
+			if(stepButton.ContainsPoint(Vector2Int(e.button.x, e.button.y)))
+			{
+				stepButton.OnDown();
+			}
+			if(resetButton.ContainsPoint(Vector2Int(e.button.x, e.button.y)))
+			{
+				resetButton.OnDown();
+			}
+		}
 		if(e.type == SDL_MOUSEBUTTONUP)
 		{
 			mb = e.button;
 
 			// We need to check the buttons
-			if(RectInt(656, 0, 64, 64).IsWithin(Vector2Int(e.button.x, e.button.y)))
+			if(pauseButton.ContainsPoint(Vector2Int(e.button.x, e.button.y)))
 			{
-				spdlog::info("Pause button was pressed!");
 				pauseSim = true;
 			}
-			if(RectInt(720, 0, 64, 64).IsWithin(Vector2Int(e.button.x, e.button.y)))
+			if(playButton.ContainsPoint(Vector2Int(e.button.x, e.button.y)))
 			{
-				spdlog::info("Play button was pressed!");
 				pauseSim = false;
 			}
-			if(RectInt(784, 0, 64, 64).IsWithin(Vector2Int(e.button.x, e.button.y)))
+			if(stepButton.ContainsPoint(Vector2Int(e.button.x, e.button.y)))
 			{
-				spdlog::info("Step button was pressed!");
 				pauseSim = true;
 				singleStep = true;
 			}
-			if(RectInt(848, 0, 64, 64).IsWithin(Vector2Int(e.button.x, e.button.y)))
+			if(resetButton.ContainsPoint(Vector2Int(e.button.x, e.button.y)))
 			{
-				spdlog::info("Reset button was pressed!");
 				pauseSim = true;
 				board = Board();
 				board.AddStones("Black", 0, 0, 10);
@@ -161,6 +187,11 @@ void Game::UpdateTick(float deltaTime)
 				player = blackPlayer;
 				totalMoves = 0;
 			}
+
+			pauseButton.OnUp();
+			playButton.OnUp();
+			stepButton.OnUp();
+			resetButton.OnUp();
 		}
 	}
 
@@ -171,19 +202,6 @@ void Game::UpdateTick(float deltaTime)
 		{
 			std::cout << player->name << " has lost." << std::endl;
 			pauseSim = true;
-			board = Board();
-			board.AddStones("Black", 0, 0, 10);
-			board.AddStones("White", 3, 3, 10);
-
-			// Set player names and start player
-			delete whitePlayer;
-			delete blackPlayer;
-			blackPlayer = new RandomPlayer();
-			whitePlayer = new AIPlayer();
-			blackPlayer->name = "Black";
-			whitePlayer->name = "White";
-			player = blackPlayer;
-			totalMoves = 0;
 			return;
 		}
 
@@ -222,7 +240,7 @@ void Game::RenderTick(float deltaTime)
 	spriteBatch.Begin();
 
 	// All the sprite rendering happens here
-	spriteBatch.Draw(Sprite(boardTexture), Vector2::Zero, Color::White, 0, Vector2::Zero, Vector2::One, SpriteFlip::None, 0.5f);
+	spriteBatch.Draw(Sprite(textures["Board"]), Vector2::Zero, Color::White, 0, Vector2::Zero, Vector2::One, SpriteFlip::None, 0.5f);
 
 	// Draw the stones
 	for(auto y = 0; y < 4; y++)
@@ -237,7 +255,7 @@ void Game::RenderTick(float deltaTime)
 				for(auto drawX = 0; drawX < 64 && i < whiteStoneCount; drawX += 16, i++)
 				{
 					auto position = Vector2((75 + (x * 144)) + drawX, (75 + (y * 144)) + drawY);
-					spriteBatch.Draw(Sprite(whiteStoneTexture), position, Color::White, 0, Vector2::Zero, Vector2::One, SpriteFlip::None, 0.25f);
+					spriteBatch.Draw(Sprite(textures["WhiteStone"]), position, Color::White, 0, Vector2::Zero, Vector2::One, SpriteFlip::None, 0.25f);
 				}
 			}
 			for(int drawY = 0, i = 0; drawY < 64 && i < blackStoneCount; drawY += 16)
@@ -245,7 +263,7 @@ void Game::RenderTick(float deltaTime)
 				for(auto drawX = 0; drawX < 64 && i < blackStoneCount; drawX += 16, i++)
 				{
 					auto position = Vector2((75 + (x * 144)) + drawX, (75 + (y * 144)) + drawY);
-					spriteBatch.Draw(Sprite(blackStoneTexture), position, Color::White, 0, Vector2::Zero, Vector2::One, SpriteFlip::None, 0.25f);
+					spriteBatch.Draw(Sprite(textures["BlackStone"]), position, Color::White, 0, Vector2::Zero, Vector2::One, SpriteFlip::None, 0.25f);
 				}
 			}
 		}
@@ -254,10 +272,10 @@ void Game::RenderTick(float deltaTime)
 	// Render the GUI
 
 	//Render Pause, Play, Step, and Reset buttons
-	spriteBatch.Draw(pauseButton, Vector2(656, 0));
-	spriteBatch.Draw(playButton, Vector2(720, 0));
-	spriteBatch.Draw(stepButton, Vector2(784, 0));
-	spriteBatch.Draw(resetButton, Vector2(848, 0));
+	pauseButton.OnRender(spriteBatch);
+	playButton.OnRender(spriteBatch);
+	stepButton.OnRender(spriteBatch);
+	resetButton.OnRender(spriteBatch);
 
 	// Render FPS and UPS
 	spriteBatch.DrawString("FPS:" + std::to_string(renderFPS), arialFont, Vector2::Zero);

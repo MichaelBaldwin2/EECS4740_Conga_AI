@@ -26,7 +26,7 @@ int RectInt::GetHeight() const
 	return max.y - min.y;
 }
 
-bool RectInt::IsWithin(Vector2Int point)
+bool RectInt::ContainsPoint(Vector2Int point)
 {
 	if(point.x < min.x)
 	{

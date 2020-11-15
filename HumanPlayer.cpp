@@ -52,7 +52,7 @@ Move HumanPlayer::GetMove(Board board, SDL_MouseButtonEvent& mb)
 			
 			for(int i = 0; i < 16; i++)
 			{
-				if(cells[i].rect.IsWithin(mousePos))
+				if(cells[i].rect.ContainsPoint(mousePos))
 				{
 					selectedCell = cells[i].cell;
 					std::cout << "Cell " << selectedCell.x << ", " << selectedCell.y << " selected" << std::endl;
@@ -71,7 +71,7 @@ Move HumanPlayer::GetMove(Board board, SDL_MouseButtonEvent& mb)
 
 			for(int i = 0; i < 16; i++)
 			{
-				if(cells[i].rect.IsWithin(mousePos))
+				if(cells[i].rect.ContainsPoint(mousePos))
 				{
 					moveToCell = cells[i].cell;
 					std::cout << "MovedToCell " << moveToCell.x << ", " << moveToCell.y << " selected" << std::endl;
