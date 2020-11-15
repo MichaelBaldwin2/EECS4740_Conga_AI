@@ -2,6 +2,7 @@
 #pragma once
 
 #include "Renderer.h"
+#include "TTFFont.h"
 #include <SDL.h>
 #include <string>
 

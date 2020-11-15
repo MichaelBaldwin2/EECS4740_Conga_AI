@@ -7,17 +7,7 @@ Move AIPlayer::GetMove(Board board, SDL_MouseButtonEvent& mb)
 	Move move = Move();
 	move = Minimax({ board, {3, 3, -1}, 0 }, 3, -10000, 10000, true).move;
 	totalDepth += 3;
-	//std::cout << "Search Depth: " << totalDepth << std::endl;
-	//std::cout << "Nodes Explored: " << exploredNodes << std::endl;
-	//std::cout << "Nodes Pruned: " << prunedNodes << std::endl;
 	return move;
-}
-
-void AIPlayer::OnRender(SpriteBatch& spriteBatch, SpriteFont font)
-{
-	spriteBatch.DrawString("Search Depth: " + std::to_string(totalDepth), font, Vector2(700, 104));
-	spriteBatch.DrawString("Nodes Explored: " + std::to_string(exploredNodes), font, Vector2(700, 120));
-	spriteBatch.DrawString("Nodes Pruned: " + std::to_string(prunedNodes), font, Vector2(700, 136));
 }
 
 BoardState AIPlayer::Minimax(BoardState state, int depth, int alpha, int beta, bool isMax)
@@ -148,4 +138,19 @@ std::vector<Move> AIPlayer::GetMoves(std::string player, Board board)
 	}
 
 	return possibleMoves;
+}
+
+int AIPlayer::GetTotalDepth()
+{
+	return totalDepth;
+}
+
+int AIPlayer::GetExploredNodes()
+{
+	return exploredNodes;
+}
+
+int AIPlayer::GetPrunedNodes()
+{
+	return prunedNodes;
 }

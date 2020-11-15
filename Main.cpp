@@ -1,6 +1,7 @@
 #include "Game.h"
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 #include <spdlog/spdlog.h>
 
 bool Init();
@@ -14,15 +15,16 @@ int main(int argc, char* args[])
 	}
 
 	spdlog::info("Initializing Game...");
-	auto game = Game();
-	if(!game.Init())
+	auto game = new Game(); // Using a pointer so that we cna control when the destructor is called
+	if(!game->Init())
 	{
 		spdlog::error("Failed to initialize game!");
 		return false;
 	}
 
 	spdlog::info("Starting game...");
-	game.Loop();
+	game->Loop();
+	delete game;
 
 	Shutdown();
 	return 0;
@@ -39,11 +41,18 @@ bool Init()
 		return false;
 	}
 
-	spdlog::info("Initializing SDL_image...");
+	spdlog::info("Initializing SDL_Image...");
 	int imgFlags = IMG_INIT_PNG;
 	if(!(IMG_Init(imgFlags) & imgFlags))
 	{
 		spdlog::error("SDL_image could not be initialized! SDL_image Error: {}", IMG_GetError());
+		return false;
+	}
+
+	spdlog::info("Initializing SDL_TTF...");
+	if(TTF_Init() == -1)
+	{
+		spdlog::error("SDL_ttf could not be initialized! SDL_ttf Error: {}", TTF_GetError());
 		return false;
 	}
 
@@ -56,6 +65,8 @@ void Shutdown()
 {
 	spdlog::info("Shutting down...");
 
+	spdlog::info("Quitting SDL_TTF...");
+	TTF_Quit();
 	spdlog::info("Quitting SDL_Image...");
 	IMG_Quit();
 	spdlog::info("Quitting SDL2...");

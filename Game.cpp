@@ -1,16 +1,22 @@
-#include "Board.h"
-#include "Game.h"
-#include "RandomPlayer.h"
-#include "HumanPlayer.h"
+#include "Agent.h"
 #include "AIPlayer.h"
+#include "Board.h"
+#include "Button.h"
+#include "Game.h"
+#include "HumanPlayer.h"
+#include "RandomPlayer.h"
 #include "RectInt.h"
 #include "Renderer.h"
+#include "Text.h"
+#include "Texture.h"
 #include "Time.h"
+#include "TTFFont.h"
+#include "SpriteBatch.h"
 #include "Window.h"
-#include "Agent.h"
 #include <SDL.h>
 #include <spdlog/spdlog.h>
 #include <iostream>
+#include <map>
 #include <string>
 #include <typeinfo>
 
@@ -29,6 +35,7 @@ Game::~Game()
 		it->second.Free();
 	}
 
+	arialFont.Free();
 	textures.clear();
 	renderer.Free();
 	window.Free();
@@ -54,17 +61,17 @@ bool Game::Init()
 	textures["Board"] = Texture(renderer, "gfx/Board.png");
 	textures["BlackStone"] = Texture(renderer, "gfx/BlackStone.png");
 	textures["WhiteStone"] = Texture(renderer, "gfx/WhiteStone.png");
-	textures["Arial"] = Texture(renderer, "gfx/Arial.png");
 	textures["PauseButton"] = Texture(renderer, "gfx/PauseButton.png");
 	textures["PlayButton"] = Texture(renderer, "gfx/PlayButton.png");
 	textures["StepButton"] = Texture(renderer, "gfx/StepButton.png");
 	textures["ResetButton"] = Texture(renderer, "gfx/ResetButton.png");
 
-	arialFont = SpriteFont(textures["Arial"], 16, 16, 256);
 	pauseButton = Button(RectInt(656, 0, 64, 64), Sprite(textures["PauseButton"]), Color(128, 128, 128));
 	playButton = Button(RectInt(720, 0, 64, 64), Sprite(textures["PlayButton"]), Color(128, 128, 128));
 	stepButton = Button(RectInt(784, 0, 64, 64), Sprite(textures["StepButton"]), Color(128, 128, 128));
 	resetButton = Button(RectInt(848, 0, 64, 64), Sprite(textures["ResetButton"]), Color(128, 128, 128));
+
+	arialFont = TTFFont("gfx/arial.ttf", 18);
 
 	// Initialize board and add starting stones
 	board = Board();
@@ -239,6 +246,14 @@ void Game::UpdateTick(float deltaTime)
 
 void Game::RenderTick(float deltaTime)
 {
+	// Declare the local Text variables, they have to be freed after spritebatch ends
+	auto fpsText = Text(arialFont);
+	auto totalMovesText = Text(arialFont);
+	auto timeTakenText = Text(arialFont);
+	auto searchDepthText = Text(arialFont);
+	auto nodesExploredText = Text(arialFont);
+	auto nodesPrunedText = Text(arialFont);
+
 	renderer.ClearScreen(Color::Black);
 	spriteBatch.Begin();
 
@@ -281,19 +296,27 @@ void Game::RenderTick(float deltaTime)
 	resetButton.OnRender(spriteBatch);
 
 	// Render FPS and UPS
-	spriteBatch.DrawString("FPS:" + std::to_string(renderFPS), arialFont, Vector2::Zero);
-	spriteBatch.DrawString("UPS:" + std::to_string(updateFPS), arialFont, Vector2(0, 16));
-	spriteBatch.DrawString("Total Moves: " + std::to_string(totalMoves), arialFont, Vector2(700, 72));
-	spriteBatch.DrawString("Time Taken: " + std::to_string(timeTaken), arialFont, Vector2(700, 88));
+	spriteBatch.Draw(fpsText.RenderTextToSprite(renderer, "FPS: " + std::to_string(renderFPS) + " (" + std::to_string(updateFPS) + ")"), Vector2::Zero);
+	spriteBatch.Draw(totalMovesText.RenderTextToSprite(renderer, "Total Moves: " + std::to_string(totalMoves)), Vector2(700, 72));
+	spriteBatch.Draw(timeTakenText.RenderTextToSprite(renderer, "Time Taken: " + std::to_string(timeTaken)), Vector2(700, 88));
 
-	//blackPlayer->OnRender(spriteBatch, arialFont);
-	whitePlayer->OnRender(spriteBatch, arialFont);
+	// AI props
+	spriteBatch.Draw(searchDepthText.RenderTextToSprite(renderer, "Search Depth: " + std::to_string(static_cast<AIPlayer*>(whitePlayer)->GetTotalDepth())), Vector2(700, 104));
+	spriteBatch.Draw(nodesExploredText.RenderTextToSprite(renderer, "Nodes Explored: " + std::to_string(static_cast<AIPlayer*>(whitePlayer)->GetExploredNodes())), Vector2(700, 120));
+	spriteBatch.Draw(nodesPrunedText.RenderTextToSprite(renderer, "Nodes Pruned: " + std::to_string(static_cast<AIPlayer*>(whitePlayer)->GetPrunedNodes())), Vector2(700, 136));
 
 	if(!onLossText.empty())
 	{
-		spriteBatch.DrawString(onLossText, arialFont, Vector2(64, 256), Color::White, 0, Vector2::Zero, Vector2(5, 5));
+		//spriteBatch.DrawString(onLossText, arialFont, Vector2(64, 256), Color::White, 0, Vector2::Zero, Vector2(5, 5));
 	}
 
 	spriteBatch.End();
 	renderer.PresentScreen();
+
+	fpsText.Free();
+	totalMovesText.Free();
+	timeTakenText.Free();
+	searchDepthText.Free();
+	nodesExploredText.Free();
+	nodesPrunedText.Free();
 }

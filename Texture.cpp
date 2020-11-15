@@ -43,7 +43,7 @@ Texture::Texture(Renderer renderer, SDL_Surface* surface) : sdlTexture(nullptr),
 	texture = SDL_CreateTextureFromSurface(renderer.GetSDLRenderer(), surface);
 	if(texture == nullptr)
 	{
-		spdlog::error("Unable to create SDL_Texture from image file at {0}! SDL_Error: {1}", filePath, SDL_GetError());
+		spdlog::error("Unable to create SDL_Texture from SDL_Surface! SDL_Error: {0}", SDL_GetError());
 		SDL_FreeSurface(surface);
 		SDL_DestroyTexture(texture);
 		return;

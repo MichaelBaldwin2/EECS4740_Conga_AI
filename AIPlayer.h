@@ -13,9 +13,11 @@ private:
 
 public:
 	Move GetMove(Board board, SDL_MouseButtonEvent& mb);
-	void OnRender(SpriteBatch& spriteBatch, SpriteFont font);
 	BoardState Minimax(BoardState state, int depth, int alpha, int beta, bool player);
 	int GetEvalValue1(Board board);
 	int GetEvalValue2(Board board);
 	std::vector<Move> GetMoves(std::string player, Board board);
+	int GetTotalDepth();
+	int GetExploredNodes();
+	int GetPrunedNodes();
 };

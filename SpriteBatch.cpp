@@ -71,7 +71,7 @@ void SpriteBatch::Draw(const Sprite sprite, const Vector2 position, const Color 
 	infos.push_back(info);
 }
 
-void SpriteBatch::DrawString(std::string text, SpriteFont spriteFont, Vector2 position, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteFlip flip, float depth)
+void SpriteBatch::Draw(std::string text, SpriteFont spriteFont, Vector2 position, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteFlip flip, float depth)
 {
 	for(auto c = 0, x = 0, y = 0; c < text.length(); c++, x += spriteFont.GetFontWidth() / 2)
 	{
