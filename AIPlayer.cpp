@@ -72,26 +72,26 @@ BoardState AIPlayer::Minimax(BoardState state, int depth, int alpha, int beta, b
 int AIPlayer::GetEvalValue1(Board board)
 {
 	// # max moves - # min moves
-	return static_cast<int>(GetMoves("White", board).size() - GetMoves("Black", board).size());
+	return static_cast<int>(GetMoves(name, board).size() - GetMoves(name == "White" ? "Black" : "White", board).size());
 }
 
 int AIPlayer::GetEvalValue2(Board board)
 {
 	// # player spaces to move to - # opponent spaces to move to
-	auto playerMoves = GetMoves("White", board);
-	auto opponentMoves = GetMoves("Black", board);
-	int evalValue = 0;
+	auto playerMoves = GetMoves(name, board);
+	auto opponentMoves = GetMoves(name == "White" ? "Black" : "White", board);
+	auto evalValue = 0;
 
 	for(int i = 0; i < playerMoves.size(); i++)
 	{
-		Board tempBoard = board;
-		evalValue += tempBoard.MoveStones("White", playerMoves[i].x, playerMoves[i].y, playerMoves[i].direction);
+		auto tempBoard = board;
+		evalValue += tempBoard.MoveStones(name, playerMoves[i].x, playerMoves[i].y, playerMoves[i].direction);
 	}
 
 	for(int i = 0; i < opponentMoves.size(); i++)
 	{
-		Board tempBoard = board;
-		evalValue -= tempBoard.MoveStones("Black", opponentMoves[i].x, opponentMoves[i].y, opponentMoves[i].direction);
+		auto tempBoard = board;
+		evalValue -= tempBoard.MoveStones(name == "White" ? "Black" : "White", opponentMoves[i].x, opponentMoves[i].y, opponentMoves[i].direction);
 	}
 
 	return evalValue;
@@ -111,26 +111,22 @@ std::vector<Move> AIPlayer::GetMoves(std::string player, Board board)
 		152		// Southeast
 	};
 
-	for(int y = 0; y < 4; y++)
+	for(auto y = 0; y < 4; y++)
 	{
-		for(int x = 0; x < 4; x++)
+		for(auto x = 0; x < 4; x++)
 		{
-			int count = board.GetStoneCount(player, x, y);
+			auto count = board.GetStoneCount(player, x, y);
 			if(count <= 0)
 			{
 				continue;
 			}
 			else
 			{
-				for(int i = 0; i < 8; i++)
+				for(auto i = 0; i < 8; i++)
 				{
 					if(board.CheckInput(player, x, y, directions[i]) == true)
 					{
-						Move move;
-						move.x = x;
-						move.y = y;
-						move.direction = directions[i];
-						possibleMoves.push_back(move);
+						possibleMoves.push_back({ x, y, directions[i] });
 					}
 				}
 			}

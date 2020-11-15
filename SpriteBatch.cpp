@@ -98,7 +98,7 @@ void SpriteBatch::Draw(std::string text, SpriteFont spriteFont, Vector2 position
 	}
 }
 
-void SpriteBatch::DrawString(std::string text, TTFFont font, Vector2 position, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteFlip flip, float depth)
+void SpriteBatch::Draw(std::string text, TTFFont font, Vector2 position, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteFlip flip, float depth)
 {
 	auto surface = TTF_RenderText_Blended(font.GetTTFFont(), text.c_str(), { color.r, color.g, color.b, color.a });
 	if(surface == nullptr)

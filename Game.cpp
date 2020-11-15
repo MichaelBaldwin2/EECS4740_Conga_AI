@@ -21,7 +21,7 @@
 
 Agent* player;
 
-Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), textures(), arialFontNormal(), pauseButton(), playButton(), stepButton(), resetButton(), blackPlayer(new RandomPlayer()), whitePlayer(new AIPlayer()), updateFPS(0), renderFPS(0), pauseSim(true), totalMoves(0), timeTaken(0), onLossText() {}
+Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), textures(), arialFontNormal(), pauseButton(), playButton(), stepButton(), resetButton(), blackPlayer(new AIPlayer()), whitePlayer(new RandomPlayer()), updateFPS(0), renderFPS(0), pauseSim(true), totalMoves(0), timeTaken(0), onLossText() {}
 
 Game::~Game()
 {
@@ -286,19 +286,19 @@ void Game::RenderTick(float deltaTime)
 	resetButton.OnRender(spriteBatch);
 
 	// Render FPS and UPS
-	spriteBatch.DrawString("FPS: " + std::to_string(renderFPS) + " (" + std::to_string(updateFPS) + ")", arialFontNormal, Vector2::Zero);
+	spriteBatch.Draw("FPS: " + std::to_string(renderFPS) + " (" + std::to_string(updateFPS) + ")", arialFontNormal, Vector2::Zero);
 
 	// Render AI info
-	spriteBatch.DrawString("Total Moves: " + std::to_string(totalMoves), arialFontNormal, Vector2(700, 72));
-	spriteBatch.DrawString("Time Taken: " + std::to_string(timeTaken), arialFontNormal, Vector2(700, 88));
-	spriteBatch.DrawString("Search Depth: " + std::to_string(static_cast<AIPlayer*>(whitePlayer)->GetTotalDepth()), arialFontNormal, Vector2(700, 104));
-	spriteBatch.DrawString("Nodes Explored: " + std::to_string(static_cast<AIPlayer*>(whitePlayer)->GetExploredNodes()), arialFontNormal, Vector2(700, 120));
-	spriteBatch.DrawString("Nodes Pruned: " + std::to_string(static_cast<AIPlayer*>(whitePlayer)->GetPrunedNodes()), arialFontNormal, Vector2(700, 136));
+	spriteBatch.Draw("Total Moves: " + std::to_string(totalMoves), arialFontNormal, Vector2(700, 72));
+	spriteBatch.Draw("Time Taken: " + std::to_string(timeTaken), arialFontNormal, Vector2(700, 88));
+	spriteBatch.Draw("Search Depth: " + std::to_string(static_cast<AIPlayer*>(blackPlayer)->GetTotalDepth()), arialFontNormal, Vector2(700, 104));
+	spriteBatch.Draw("Nodes Explored: " + std::to_string(static_cast<AIPlayer*>(blackPlayer)->GetExploredNodes()), arialFontNormal, Vector2(700, 120));
+	spriteBatch.Draw("Nodes Pruned: " + std::to_string(static_cast<AIPlayer*>(blackPlayer)->GetPrunedNodes()), arialFontNormal, Vector2(700, 136));
 
 	// Render Win/Loss if game over
 	if(!onLossText.empty())
 	{
-		spriteBatch.DrawString(onLossText, arialFontHuge, Vector2(64, 256));
+		spriteBatch.Draw(onLossText, arialFontHuge, Vector2(64, 256));
 	}
 
 	spriteBatch.End();

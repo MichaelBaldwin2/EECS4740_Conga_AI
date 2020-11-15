@@ -39,5 +39,5 @@ public:
 	void End();
 	void Draw(Sprite sprite, Vector2 position, Color color = Color::White, float rotation = 0, Vector2 origin = Vector2::Zero, Vector2 scale = Vector2::One, SpriteFlip flip = SpriteFlip::None, float depth = 0.0f);
 	void Draw(std::string text, SpriteFont spriteFont, Vector2 position, Color color = Color::White, float rotation = 0, Vector2 origin = Vector2::Zero, Vector2 scale = Vector2::One, SpriteFlip flip = SpriteFlip::None, float depth = 0.0f);
-	void DrawString(std::string text, TTFFont font, Vector2 position, Color color = Color::White, float rotation = 0, Vector2 origin = Vector2::Zero, Vector2 scale = Vector2::One, SpriteFlip flip = SpriteFlip::None, float depth = 0.0f);
+	void Draw(std::string text, TTFFont font, Vector2 position, Color color = Color::White, float rotation = 0, Vector2 origin = Vector2::Zero, Vector2 scale = Vector2::One, SpriteFlip flip = SpriteFlip::None, float depth = 0.0f);
 };
