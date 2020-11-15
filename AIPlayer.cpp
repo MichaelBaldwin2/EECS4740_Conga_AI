@@ -7,6 +7,7 @@ Move AIPlayer::GetMove(Board& board, SDL_MouseButtonEvent& mb) {
 	move = Minimax({ board, {3, 3, -1}, 0 }, 3, -10000, 10000, true).move;
 	totalDepth += 3;
 	std::cout << "Search Depth: " << totalDepth << std::endl;
+	std::cout << "Nodes Explored: " << exploredNodes << std::endl;
 	std::cout << "Nodes Pruned: " << prunedNodes << std::endl;
 	return move;
 }
@@ -15,8 +16,8 @@ BoardState AIPlayer::Minimax(BoardState state, int depth, int alpha, int beta, b
 {
 	if(depth == 0 || state.board.CheckLoss(player))
 	{
-		//totalNodes++;
-		state.evalValue = GetEvalValue(player, state.board);
+		exploredNodes++;
+		state.evalValue = GetEvalValue2(player, state.board);
 		return state;
 	}
 
@@ -29,7 +30,7 @@ BoardState AIPlayer::Minimax(BoardState state, int depth, int alpha, int beta, b
 			auto boardWithMove = state.board;
 			boardWithMove.MoveStones(player, moves[i].x, moves[i].y, moves[i].direction);
 			auto eval = Minimax({ boardWithMove, moves[i], 0 }, depth - 1, alpha, beta, !player);
-			//totalNodes++;
+			exploredNodes++;
 
 			if(eval.evalValue >= maxEval.evalValue)
 			{
@@ -52,7 +53,7 @@ BoardState AIPlayer::Minimax(BoardState state, int depth, int alpha, int beta, b
 			auto boardWithMove = state.board;
 			boardWithMove.MoveStones(player, moves[i].x, moves[i].y, moves[i].direction);
 			auto eval = Minimax({ boardWithMove, moves[i], 0 }, depth - 1, alpha, beta, !player);
-			//totalNodes++;
+			exploredNodes++;
 
 			if (eval.evalValue <= minEval.evalValue) {
 				minEval = { boardWithMove, moves[i], eval.evalValue };
@@ -67,53 +68,29 @@ BoardState AIPlayer::Minimax(BoardState state, int depth, int alpha, int beta, b
 	}
 }
 
-int AIPlayer::GetEvalValue(bool player, Board board) {
+int AIPlayer::GetEvalValue2(bool player, Board board) {
+	// # opponent spaces to move to - # player spaces to move to
+	auto opponentMoves = GetMoves(!player, board);
+	auto playerMoves = GetMoves(player, board);
+	int evalValue = 0;
+
+	for (int i = 0; i < opponentMoves.size(); i++) {
+		Board tempBoard = board;
+		evalValue += tempBoard.MoveStones(!player, opponentMoves[i].x, opponentMoves[i].y, opponentMoves[i].direction);
+	}
+
+	for (int j = 0; j < playerMoves.size(); j++) {
+		Board tempBoard = board;
+		evalValue -= tempBoard.MoveStones(player, playerMoves[j].x, playerMoves[j].y, playerMoves[j].direction);
+	}
+
+	return evalValue;
+}
+
+int AIPlayer::GetEvalValue1(bool player, Board board) {
 	// # opponent moves - # player moves
 	return GetMoves(!player, board).size() - GetMoves(player, board).size();
 }
-
-/*
-int AIPlayer::GetEvalValue(bool player, Board board) {
-	// Evaluation value is number of spaces adjacent to opponent
-	int count = 0;
-
-	for (auto y = 0; y < 4; y++) {
-		for (auto x = 0; x < 4; x++) {
-			if (board.GetStoneCount(!player, x, y) <= 0) {
-				continue;
-			}
-			else {
-				if (board.GetStoneCount(player, x + 1, y) > 0) {
-					count++;
-				}
-				else if (board.GetStoneCount(player, x - 1, y) > 0) {
-					count++;
-				}
-				else if (board.GetStoneCount(player, x, y + 1) > 0) {
-					count++;
-				}
-				else if (board.GetStoneCount(player, x, y - 1) > 0) {
-					count++;
-				}
-				else if (board.GetStoneCount(player, x + 1, y + 1) > 0) {
-					count++;
-				}
-				else if (board.GetStoneCount(player, x - 1, y + 1) > 0) {
-					count++;
-				}
-				else if (board.GetStoneCount(player, x + 1, y - 1) > 0) {
-					count++;
-				}
-				else if (board.GetStoneCount(player, x - 1, y - 1) > 0) {
-					count++;
-				}
-			}
-		}
-	}
-
-	return count;
-}
-*/
 
 std::vector<Move> AIPlayer::GetMoves(bool player, Board board) {
 	std::vector<Move> possibleMoves;

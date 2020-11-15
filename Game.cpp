@@ -78,7 +78,7 @@ void Game::Loop()
 	float nextFpsRender = Time::RealTimeSinceStartup();
 	int upsCount = 0;
 	int fpsCount = 0;
-	float delay = 0.1f;
+	float delay = 0.01f;
 	if(typeid(*blackPlayer) == typeid(HumanPlayer))
 	{
 		delay = 0.016f;
@@ -173,9 +173,13 @@ void Game::UpdateTick(float deltaTime)
 			std::cout << player->name << " has lost." << std::endl;
 			isRunning = false;
 		}
-
+		auto startTime = Time::RealTimeSinceStartup();
 		// Get and make next move
 		auto nextMove = player->GetMove(board, mb);
+		auto endTime = Time::RealTimeSinceStartup();
+		if (player == whitePlayer) {
+			std::cout << "Time Taken: " << endTime - startTime << "s" << std::endl;
+		}
 
 		if(board.CheckInput((player == whitePlayer), nextMove.x, nextMove.y, nextMove.direction))
 		{

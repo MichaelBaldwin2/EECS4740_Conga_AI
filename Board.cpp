@@ -184,7 +184,7 @@ bool Board::CheckInput(bool white, int x, int y, int direction)
 	}
 }
 
-void Board::MoveStones(bool white, unsigned int x, unsigned int y, unsigned int direction) {
+int Board::MoveStones(bool white, unsigned int x, unsigned int y, unsigned int direction) {
 	int numStones = RemoveStones(white, x, y);
 	int freeSpaces = 0;
 	int addX[3], addY[3];
@@ -326,6 +326,9 @@ void Board::MoveStones(bool white, unsigned int x, unsigned int y, unsigned int 
 		if (numStones > 0) { AddStones(white, addX[2], addY[2], numStones); }
 		break;
 	}
+
+	// Return freeSpaces for eval function
+	return freeSpaces;
 }
 
 bool Board::CheckLoss(bool white)
