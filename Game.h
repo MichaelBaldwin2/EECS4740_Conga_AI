@@ -25,21 +25,14 @@ private:
 	Button playButton;
 	Button stepButton;
 	Button resetButton;
-	/*Texture boardTexture;
-	Texture blackStoneTexture;
-	Texture whiteStoneTexture;*/
 	Agent* blackPlayer;
 	Agent* whitePlayer;
-	//Texture arialFontTexture;
 	int updateFPS;
 	int renderFPS;
 	int totalMoves;
 	float timeTaken;
 	bool pauseSim;
-	/*Texture pauseButtonTexture;
-	Texture playButtonTexture;
-	Texture stepButtonTexture;
-	Texture resetButtonTexture;*/
+	std::string onLossText;
 
 public:
 	Game();
@@ -48,5 +41,4 @@ public:
 	void Loop();
 	void UpdateTick(float deltaTime);
 	void RenderTick(float deltaTime);
-	Board* GetBoard();
 };

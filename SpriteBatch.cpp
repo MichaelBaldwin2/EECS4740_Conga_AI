@@ -79,6 +79,6 @@ void SpriteBatch::DrawString(std::string text, SpriteFont spriteFont, Vector2 po
 	for(auto c = 0, x = 0, y = 0; c < text.length(); c++, x += spriteFont.GetFontWidth() / 2)
 	{
 		auto sprite = spriteFont.GetSprite(text[c]);
-		Draw(sprite, position + Vector2(x, y), Color::White, rotation, Vector2::Zero, Vector2::One, SpriteFlip::None, 0);
+		Draw(sprite, position + (Vector2(x, y) * scale), color, rotation, origin, scale, flip, depth);
 	}
 }

@@ -16,7 +16,7 @@
 
 Agent* player;
 
-Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), textures(), arialFont(), pauseButton(), playButton(), stepButton(), resetButton(), blackPlayer(new RandomPlayer()), whitePlayer(new AIPlayer()), updateFPS(), renderFPS(), pauseSim(true), totalMoves(0), timeTaken(0) {}
+Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), textures(), arialFont(), pauseButton(), playButton(), stepButton(), resetButton(), blackPlayer(new RandomPlayer()), whitePlayer(new AIPlayer()), updateFPS(), renderFPS(), pauseSim(true), totalMoves(0), timeTaken(0), onLossText() {}
 
 Game::~Game()
 {
@@ -186,6 +186,8 @@ void Game::UpdateTick(float deltaTime)
 				whitePlayer->name = "White";
 				player = blackPlayer;
 				totalMoves = 0;
+				timeTaken = 0;
+				onLossText = "";
 			}
 
 			pauseButton.OnUp();
@@ -201,6 +203,7 @@ void Game::UpdateTick(float deltaTime)
 		if(board.CheckLoss(player->name))
 		{
 			std::cout << player->name << " has lost." << std::endl;
+			onLossText = player->name + " has lost!";
 			pauseSim = true;
 			return;
 		}
@@ -216,7 +219,6 @@ void Game::UpdateTick(float deltaTime)
 			// Move stones and print board
 			board.MoveStones(player->name, nextMove.x, nextMove.y, nextMove.direction);
 			totalMoves++;
-			std::cout << "Total Moves: " << totalMoves << std::endl;
 
 			// Change current player
 			switch(player == blackPlayer)
@@ -286,11 +288,11 @@ void Game::RenderTick(float deltaTime)
 	//blackPlayer->OnRender(spriteBatch, arialFont);
 	whitePlayer->OnRender(spriteBatch, arialFont);
 
+	if(!onLossText.empty())
+	{
+		spriteBatch.DrawString(onLossText, arialFont, Vector2(64, 256), Color::White, 0, Vector2::Zero, Vector2(5, 5));
+	}
+
 	spriteBatch.End();
 	renderer.PresentScreen();
-}
-
-Board* Game::GetBoard()
-{
-	return &board;
 }
