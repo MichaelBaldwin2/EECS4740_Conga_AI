@@ -3,7 +3,7 @@
 #include <random>
 #include <iostream>
 
-Move RandomPlayer::GetMove(Board& board, SDL_MouseButtonEvent& mb) {
+Move RandomPlayer::GetMove(Board board, SDL_MouseButtonEvent& mb) {
 	bool validMove = false;
 	const int directions[] = {
 		85,		// Up
@@ -18,8 +18,8 @@ Move RandomPlayer::GetMove(Board& board, SDL_MouseButtonEvent& mb) {
 
 	Move move = Move();
 	std::random_device rd;
-	//std::mt19937 gen(rd()); // seed the generator
-	std::mt19937 gen(123456); // seed the generator
+	std::mt19937 gen(rd()); // seed the generator
+	//std::mt19937 gen(0); // seed the generator
 	std::uniform_int_distribution<> coordDistr(0, 3);
 	std::uniform_int_distribution<> dirDistr(0, 7);
 
@@ -29,7 +29,7 @@ Move RandomPlayer::GetMove(Board& board, SDL_MouseButtonEvent& mb) {
 		move.direction = directions[dirDistr(gen)];
 
 		validMove = board.CheckInput(
-			(this->name.compare("White") == 0),
+			name,
 			move.x,
 			move.y,
 			move.direction

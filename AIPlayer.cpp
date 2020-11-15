@@ -2,37 +2,44 @@
 #include "BoardState.h"
 #include <iostream>
 
-Move AIPlayer::GetMove(Board& board, SDL_MouseButtonEvent& mb) {
+Move AIPlayer::GetMove(Board board, SDL_MouseButtonEvent& mb) {
 	Move move = Move();
 	move = Minimax({ board, {3, 3, -1}, 0 }, 3, -10000, 10000, true).move;
 	totalDepth += 3;
-	std::cout << "Search Depth: " << totalDepth << std::endl;
-	std::cout << "Nodes Explored: " << exploredNodes << std::endl;
-	std::cout << "Nodes Pruned: " << prunedNodes << std::endl;
+	//std::cout << "Search Depth: " << totalDepth << std::endl;
+	//std::cout << "Nodes Explored: " << exploredNodes << std::endl;
+	//std::cout << "Nodes Pruned: " << prunedNodes << std::endl;
 	return move;
 }
 
-BoardState AIPlayer::Minimax(BoardState state, int depth, int alpha, int beta, bool player)
+void AIPlayer::OnRender(SpriteBatch& spriteBatch, SpriteFont font)
 {
-	if(depth == 0 || state.board.CheckLoss(player) || state.board.CheckLoss(!player))
+	spriteBatch.DrawString("Search Depth: " + std::to_string(totalDepth), font, Vector2(700, 104));
+	spriteBatch.DrawString("Nodes Explored: " + std::to_string(exploredNodes), font, Vector2(700, 120));
+	spriteBatch.DrawString("Nodes Pruned: " + std::to_string(prunedNodes), font, Vector2(700, 136));
+}
+
+BoardState AIPlayer::Minimax(BoardState state, int depth, int alpha, int beta, bool isMax)
+{
+	if(depth == 0 || state.board.CheckLoss("White") || state.board.CheckLoss("Black"))
 	{
 		exploredNodes++;
-		state.evalValue = GetEvalValue2(player, state.board);
+		state.evalValue = GetEvalValue2(state.board);
 		return state;
 	}
 
-	if(player)
+	if(isMax)
 	{
 		auto maxEval = BoardState{ state.board, state.move, -10000 };
-		auto moves = GetMoves(player, state.board);
+		auto moves = GetMoves(name, state.board);
 		for(auto i = 0; i < moves.size(); i++)
 		{
 			auto boardWithMove = state.board;
-			boardWithMove.MoveStones(player, moves[i].x, moves[i].y, moves[i].direction);
-			auto eval = Minimax({ boardWithMove, moves[i], 0 }, depth - 1, alpha, beta, !player);
+			boardWithMove.MoveStones(name, moves[i].x, moves[i].y, moves[i].direction);
+			auto eval = Minimax({ boardWithMove, moves[i], 0 }, depth - 1, alpha, beta, !isMax);
 			exploredNodes++;
 
-			if(eval.evalValue >= maxEval.evalValue)
+			if(eval.evalValue > maxEval.evalValue)
 			{
 				maxEval = { boardWithMove, moves[i], eval.evalValue };
 			}
@@ -47,15 +54,15 @@ BoardState AIPlayer::Minimax(BoardState state, int depth, int alpha, int beta, b
 	else
 	{
 		auto minEval = BoardState{ state.board, state.move, 10000 };
-		auto moves = GetMoves(player, state.board);
+		auto moves = GetMoves(name == "White" ? "Black" : "White", state.board);
 		for(auto i = 0; i < moves.size(); i++)
 		{
 			auto boardWithMove = state.board;
-			boardWithMove.MoveStones(player, moves[i].x, moves[i].y, moves[i].direction);
-			auto eval = Minimax({ boardWithMove, moves[i], 0 }, depth - 1, alpha, beta, !player);
+			boardWithMove.MoveStones(name == "White" ? "Black" : "White", moves[i].x, moves[i].y, moves[i].direction);
+			auto eval = Minimax({ boardWithMove, moves[i], 0 }, depth - 1, alpha, beta, !isMax);
 			exploredNodes++;
 
-			if (eval.evalValue <= minEval.evalValue) {
+			if (eval.evalValue < minEval.evalValue) {
 				minEval = { boardWithMove, moves[i], eval.evalValue };
 			}
 			beta = std::min(beta, eval.evalValue);
@@ -68,31 +75,32 @@ BoardState AIPlayer::Minimax(BoardState state, int depth, int alpha, int beta, b
 	}
 }
 
-int AIPlayer::GetEvalValue2(bool player, Board board) {
-	// # opponent spaces to move to - # player spaces to move to
-	auto opponentMoves = GetMoves(!player, board);
-	auto playerMoves = GetMoves(player, board);
+int AIPlayer::GetEvalValue1(Board board)
+{
+	// # max moves - # min moves
+	return GetMoves("White", board).size() - GetMoves("Black", board).size();
+}
+
+int AIPlayer::GetEvalValue2(Board board) {
+	// # player spaces to move to - # opponent spaces to move to
+	auto playerMoves = GetMoves("White", board);
+	auto opponentMoves = GetMoves("Black", board);
 	int evalValue = 0;
+
+	for (int i = 0; i < playerMoves.size(); i++) {
+		Board tempBoard = board;
+		evalValue += tempBoard.MoveStones("White", playerMoves[i].x, playerMoves[i].y, playerMoves[i].direction);
+	}
 
 	for (int i = 0; i < opponentMoves.size(); i++) {
 		Board tempBoard = board;
-		evalValue += tempBoard.MoveStones(!player, opponentMoves[i].x, opponentMoves[i].y, opponentMoves[i].direction);
-	}
-
-	for (int j = 0; j < playerMoves.size(); j++) {
-		Board tempBoard = board;
-		evalValue -= tempBoard.MoveStones(player, playerMoves[j].x, playerMoves[j].y, playerMoves[j].direction);
+		evalValue -= tempBoard.MoveStones("Black", opponentMoves[i].x, opponentMoves[i].y, opponentMoves[i].direction);
 	}
 
 	return evalValue;
 }
 
-int AIPlayer::GetEvalValue1(bool player, Board board) {
-	// # opponent moves - # player moves
-	return GetMoves(!player, board).size() - GetMoves(player, board).size();
-}
-
-std::vector<Move> AIPlayer::GetMoves(bool player, Board board) {
+std::vector<Move> AIPlayer::GetMoves(std::string player, Board board) {
 	std::vector<Move> possibleMoves;
 	const int directions[] = {
 		85,		// Up

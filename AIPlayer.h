@@ -2,6 +2,7 @@
 
 #include "Agent.h"
 #include "BoardState.h"
+#include <string>
 
 class AIPlayer : public Agent
 {
@@ -11,9 +12,10 @@ private:
 	int prunedNodes = 0;
 
 public:
-	Move GetMove(Board& board, SDL_MouseButtonEvent& mb);
+	Move GetMove(Board board, SDL_MouseButtonEvent& mb);
+	void OnRender(SpriteBatch& spriteBatch, SpriteFont font);
 	BoardState Minimax(BoardState state, int depth, int alpha, int beta, bool player);
-	int GetEvalValue2(bool player, Board board);
-	int GetEvalValue1(bool player, Board board);
-	std::vector<Move> GetMoves(bool isWhite, Board board);
+	int GetEvalValue1(Board board);
+	int GetEvalValue2(Board board);
+	std::vector<Move> GetMoves(std::string player, Board board);
 };

@@ -25,6 +25,8 @@ private:
 	SpriteFont arialFont;
 	int updateFPS;
 	int renderFPS;
+	int totalMoves;
+	float timeTaken;
 	Texture playButton;
 	Texture pauseButton;
 	Texture stepButton;

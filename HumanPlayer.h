@@ -10,5 +10,6 @@ private:
 
 public:
 	HumanPlayer();
-	Move GetMove(Board& board, SDL_MouseButtonEvent& mb);
+	Move GetMove(Board board, SDL_MouseButtonEvent& mb);
+	void OnRender(SpriteBatch& spriteBatch, SpriteFont font) {}
 };
