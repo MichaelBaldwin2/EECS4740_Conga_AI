@@ -9,9 +9,20 @@
 #include <algorithm>
 #include <vector>
 
-SpriteBatch::SpriteBatch() : renderer(), isDrawing(false), infos() {}
+SpriteBatch::SpriteBatch() : renderer(), isDrawing(false), infos(), tempTextures() {}
 
 SpriteBatch::SpriteBatch(const Renderer renderer) : renderer(renderer), isDrawing(false), infos() {}
+
+void SpriteBatch::Free()
+{
+	for(auto it = tempTextures.begin(); it != tempTextures.end(); it++)
+	{
+		it->Free();
+	}
+
+	tempTextures.clear();
+	infos.clear();
+}
 
 void SpriteBatch::Begin()
 {
@@ -21,6 +32,13 @@ void SpriteBatch::Begin()
 		return;
 	}
 
+	// Free and clear all temp textures and previous sprite infos
+	for(auto it = tempTextures.begin(); it != tempTextures.end(); it++)
+	{
+		it->Free();
+	}
+
+	tempTextures.clear();
 	infos.clear();
 	isDrawing = true;
 }
@@ -78,4 +96,22 @@ void SpriteBatch::Draw(std::string text, SpriteFont spriteFont, Vector2 position
 		auto sprite = spriteFont.GetSprite(text[c]);
 		Draw(sprite, position + (Vector2(static_cast<float>(x), static_cast<float>(y)) * scale), color, rotation, origin, scale, flip, depth);
 	}
+}
+
+void SpriteBatch::DrawString(std::string text, TTFFont font, Vector2 position, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteFlip flip, float depth)
+{
+	auto surface = TTF_RenderText_Blended(font.GetTTFFont(), text.c_str(), { color.r, color.g, color.b, color.a });
+	if(surface == nullptr)
+	{
+		spdlog::error("Failed to render ttf text to SDL_Surface! TTF_Error: {0}", TTF_GetError());
+		SDL_FreeSurface(surface);
+		surface = nullptr;
+		return;
+	}
+
+	auto texture = Texture(renderer, surface);
+	tempTextures.push_back(texture);
+	SDL_FreeSurface(surface);
+	surface = nullptr;
+	Draw(Sprite(texture), position, Color::White, rotation, origin, scale, flip, depth);
 }

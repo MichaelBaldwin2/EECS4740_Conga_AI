@@ -4,7 +4,6 @@
 #include "Board.h"
 #include "Button.h"
 #include "Renderer.h"
-#include "Text.h"
 #include "Texture.h"
 #include "TTFFont.h"
 #include "SpriteBatch.h"
@@ -21,7 +20,8 @@ private:
 	Renderer renderer;
 	SpriteBatch spriteBatch;
 	std::map<std::string, Texture> textures;
-	TTFFont arialFont;
+	TTFFont arialFontNormal;
+	TTFFont arialFontHuge;
 	Button pauseButton;
 	Button playButton;
 	Button stepButton;
