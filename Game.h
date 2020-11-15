@@ -20,8 +20,9 @@ private:
 	Renderer renderer;
 	SpriteBatch spriteBatch;
 	std::map<std::string, Texture> textures;
+	TTFFont arialFontSmall;
 	TTFFont arialFontNormal;
-	TTFFont arialFontHuge;
+	TTFFont arialFontLarge;
 	Button pauseButton;
 	Button playButton;
 	Button stepButton;

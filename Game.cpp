@@ -21,7 +21,7 @@
 
 Agent* player;
 
-Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), textures(), arialFontNormal(), pauseButton(), playButton(), stepButton(), resetButton(), blackPlayer(new AIPlayer()), whitePlayer(new AIPlayer()), updateFPS(0), renderFPS(0), pauseSim(true), totalMoves(0), timeTaken(0), onLossText() {}
+Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), textures(), arialFontNormal(), pauseButton(), playButton(), stepButton(), resetButton(), blackPlayer(new AIPlayer()), whitePlayer(new RandomPlayer()), updateFPS(0), renderFPS(0), pauseSim(true), totalMoves(0), timeTaken(0), onLossText() {}
 
 Game::~Game()
 {
@@ -34,8 +34,9 @@ Game::~Game()
 		it->second.Free();
 	}
 
+	arialFontSmall.Free();
 	arialFontNormal.Free();
-	arialFontHuge.Free();
+	arialFontLarge.Free();
 	spriteBatch.Free();
 	textures.clear();
 	renderer.Free();
@@ -44,7 +45,7 @@ Game::~Game()
 
 bool Game::Init()
 {
-	window = Window(1280, 656, "Conga AI");
+	window = Window(912, 656, "Conga AI");
 	if(window.GetSDLWindow() == nullptr)
 	{
 		return false;
@@ -72,8 +73,9 @@ bool Game::Init()
 	stepButton = Button(RectInt(784, 0, 64, 64), Sprite(textures["StepButton"]), Color(128, 128, 128));
 	resetButton = Button(RectInt(848, 0, 64, 64), Sprite(textures["ResetButton"]), Color(128, 128, 128));
 
-	arialFontNormal = TTFFont("gfx/arial.ttf", 16);
-	arialFontHuge = TTFFont("gfx/arial.ttf", 128);
+	arialFontSmall = TTFFont("gfx/arial.ttf", 16);
+	arialFontNormal = TTFFont("gfx/arial.ttf", 32);
+	arialFontLarge = TTFFont("gfx/arial.ttf", 128);
 
 	// Initialize board and add starting stones
 	board = Board();
@@ -189,7 +191,7 @@ void Game::UpdateTick(float deltaTime)
 				delete whitePlayer;
 				delete blackPlayer;
 				blackPlayer = new AIPlayer();
-				whitePlayer = new AIPlayer();
+				whitePlayer = new RandomPlayer();
 				blackPlayer->name = "Black";
 				whitePlayer->name = "White";
 				player = blackPlayer;
@@ -289,16 +291,17 @@ void Game::RenderTick(float deltaTime)
 	spriteBatch.Draw("FPS: " + std::to_string(renderFPS) + " (" + std::to_string(updateFPS) + ")", arialFontNormal, Vector2::Zero);
 
 	// Render AI info
-	spriteBatch.Draw("Total Moves: " + std::to_string(totalMoves), arialFontNormal, Vector2(700, 72));
-	spriteBatch.Draw("Time Taken: " + std::to_string(timeTaken), arialFontNormal, Vector2(700, 88));
-	spriteBatch.Draw("Search Depth: " + std::to_string(static_cast<AIPlayer*>(blackPlayer)->GetTotalDepth()), arialFontNormal, Vector2(700, 104));
-	spriteBatch.Draw("Nodes Explored: " + std::to_string(static_cast<AIPlayer*>(blackPlayer)->GetExploredNodes()), arialFontNormal, Vector2(700, 120));
-	spriteBatch.Draw("Nodes Pruned: " + std::to_string(static_cast<AIPlayer*>(blackPlayer)->GetPrunedNodes()), arialFontNormal, Vector2(700, 136));
+	spriteBatch.Draw("AI Agent Info", arialFontNormal, Vector2(700, 72));
+	spriteBatch.Draw("Total Moves: " + std::to_string(totalMoves), arialFontSmall, Vector2(700, 104));
+	spriteBatch.Draw("Time Taken: " + std::to_string(timeTaken), arialFontSmall, Vector2(700, 120));
+	spriteBatch.Draw("Search Depth: " + std::to_string(static_cast<AIPlayer*>(blackPlayer)->GetTotalDepth()), arialFontSmall, Vector2(700, 136));
+	spriteBatch.Draw("Nodes Explored: " + std::to_string(static_cast<AIPlayer*>(blackPlayer)->GetExploredNodes()), arialFontSmall, Vector2(700, 152));
+	spriteBatch.Draw("Nodes Pruned: " + std::to_string(static_cast<AIPlayer*>(blackPlayer)->GetPrunedNodes()), arialFontSmall, Vector2(700, 168));
 
 	// Render Win/Loss if game over
 	if(!onLossText.empty())
 	{
-		spriteBatch.Draw(onLossText, arialFontHuge, Vector2(64, 256));
+		spriteBatch.Draw(onLossText, arialFontLarge, Vector2(64, 256));
 	}
 
 	spriteBatch.End();
