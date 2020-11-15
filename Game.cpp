@@ -21,7 +21,7 @@
 
 Agent* player;
 
-Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), textures(), arialFontNormal(), pauseButton(), playButton(), stepButton(), resetButton(), blackPlayer(new AIPlayer()), whitePlayer(new RandomPlayer()), updateFPS(0), renderFPS(0), pauseSim(true), totalMoves(0), timeTaken(0), onLossText() {}
+Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), textures(), arialFontNormal(), pauseButton(), playButton(), stepButton(), resetButton(), blackPlayer(new AIPlayer()), whitePlayer(new AIPlayer()), updateFPS(0), renderFPS(0), pauseSim(true), totalMoves(0), timeTaken(0), onLossText() {}
 
 Game::~Game()
 {
@@ -188,7 +188,7 @@ void Game::UpdateTick(float deltaTime)
 				// Set player names and start player
 				delete whitePlayer;
 				delete blackPlayer;
-				blackPlayer = new RandomPlayer();
+				blackPlayer = new AIPlayer();
 				whitePlayer = new AIPlayer();
 				blackPlayer->name = "Black";
 				whitePlayer->name = "White";
