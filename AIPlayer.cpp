@@ -14,7 +14,7 @@ Move AIPlayer::GetMove(Board& board, SDL_MouseButtonEvent& mb) {
 
 BoardState AIPlayer::Minimax(BoardState state, int depth, int alpha, int beta, bool player)
 {
-	if(depth == 0 || state.board.CheckLoss(player))
+	if(depth == 0 || state.board.CheckLoss(player) || state.board.CheckLoss(!player))
 	{
 		exploredNodes++;
 		state.evalValue = GetEvalValue2(player, state.board);
