@@ -47,8 +47,7 @@ void SpriteBatch::End()
 	// Call draw on the sorted sprites
 	for(const SpriteInfo info : infos)
 	{
-		const auto sdlTexture = info.sprite.GetTexture().GetSDLTexture();
-		const auto srcRect = static_cast<SDL_Rect>(info.sprite.GetSrcRect());
+		const auto srcRect = SDL_Rect{ info.sprite.GetSrcRect().GetX(), info.sprite.GetSrcRect().GetY(), info.sprite.GetSrcRect().GetWidth(), info.sprite.GetSrcRect().GetHeight() };
 		const SDL_Rect dstRect
 		{
 			static_cast<int>(info.position.x),
@@ -56,13 +55,11 @@ void SpriteBatch::End()
 			static_cast<int>(static_cast<float>(info.sprite.GetSrcRect().GetWidth() * info.scale.x)),
 			static_cast<int>(static_cast<float>(info.sprite.GetSrcRect().GetHeight() * info.scale.y))
 		};
-		const auto rotation = info.rotation;
-		const auto center = static_cast<SDL_Point>(info.origin);
-		const auto flip = static_cast<SDL_RendererFlip>(info.flip);
+		const auto origin = SDL_Point{ static_cast<int>(info.origin.x), static_cast<int>(info.origin.y) };
 
-		SDL_SetTextureColorMod(sdlTexture, info.color.r, info.color.g, info.color.b);
-		SDL_SetTextureAlphaMod(sdlTexture, info.color.a);
-		SDL_RenderCopyEx(renderer.GetSDLRenderer(), sdlTexture, &srcRect, &dstRect, rotation, &center, flip);
+		SDL_SetTextureColorMod(info.sprite.GetTexture().GetSDLTexture(), info.color.r, info.color.g, info.color.b);
+		SDL_SetTextureAlphaMod(info.sprite.GetTexture().GetSDLTexture(), info.color.a);
+		SDL_RenderCopyEx(renderer.GetSDLRenderer(), info.sprite.GetTexture().GetSDLTexture(), &srcRect, &dstRect, info.rotation, &origin, static_cast<SDL_RendererFlip>(info.flip));
 	}
 
 	isDrawing = false;
@@ -79,6 +76,6 @@ void SpriteBatch::DrawString(std::string text, SpriteFont spriteFont, Vector2 po
 	for(auto c = 0, x = 0, y = 0; c < text.length(); c++, x += spriteFont.GetFontWidth() / 2)
 	{
 		auto sprite = spriteFont.GetSprite(text[c]);
-		Draw(sprite, position + (Vector2(x, y) * scale), color, rotation, origin, scale, flip, depth);
+		Draw(sprite, position + (Vector2(static_cast<float>(x), static_cast<float>(y)) * scale), color, rotation, origin, scale, flip, depth);
 	}
 }

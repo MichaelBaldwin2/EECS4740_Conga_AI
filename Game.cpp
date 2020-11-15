@@ -16,7 +16,7 @@
 
 Agent* player;
 
-Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), textures(), arialFont(), pauseButton(), playButton(), stepButton(), resetButton(), blackPlayer(new RandomPlayer()), whitePlayer(new AIPlayer()), updateFPS(), renderFPS(), pauseSim(true), totalMoves(0), timeTaken(0), onLossText() {}
+Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), textures(), arialFont(), pauseButton(), playButton(), stepButton(), resetButton(), blackPlayer(new RandomPlayer()), whitePlayer(new AIPlayer()), updateFPS(0), renderFPS(0), pauseSim(true), totalMoves(0), timeTaken(0), onLossText("") {}
 
 Game::~Game()
 {
@@ -221,7 +221,8 @@ void Game::UpdateTick(float deltaTime)
 			totalMoves++;
 
 			// Change current player
-			switch(player == blackPlayer)
+			auto p = player == blackPlayer;
+			switch(p)
 			{
 				case false:
 					player = blackPlayer;
@@ -252,11 +253,11 @@ void Game::RenderTick(float deltaTime)
 			auto whiteStoneCount = board.GetStoneCount("White", x, y);
 			auto blackStoneCount = board.GetStoneCount("Black", x, y);
 
-			for(int drawY = 0, i = 0; drawY < 64 && i < whiteStoneCount; drawY += 16)
+			for(auto drawY = 0, i = 0; drawY < 64 && i < whiteStoneCount; drawY += 16)
 			{
 				for(auto drawX = 0; drawX < 64 && i < whiteStoneCount; drawX += 16, i++)
 				{
-					auto position = Vector2((75 + (x * 144)) + drawX, (75 + (y * 144)) + drawY);
+					auto position = Vector2Int((75 + (x * 144)) + drawX, (75 + (y * 144)) + drawY);
 					spriteBatch.Draw(Sprite(textures["WhiteStone"]), position, Color::White, 0, Vector2::Zero, Vector2::One, SpriteFlip::None, 0.25f);
 				}
 			}
@@ -264,7 +265,7 @@ void Game::RenderTick(float deltaTime)
 			{
 				for(auto drawX = 0; drawX < 64 && i < blackStoneCount; drawX += 16, i++)
 				{
-					auto position = Vector2((75 + (x * 144)) + drawX, (75 + (y * 144)) + drawY);
+					auto position = Vector2Int((75 + (x * 144)) + drawX, (75 + (y * 144)) + drawY);
 					spriteBatch.Draw(Sprite(textures["BlackStone"]), position, Color::White, 0, Vector2::Zero, Vector2::One, SpriteFlip::None, 0.25f);
 				}
 			}

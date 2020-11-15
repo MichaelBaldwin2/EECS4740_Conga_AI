@@ -1,6 +1,6 @@
 #pragma once
 
-#include <sdl.h>
+#include "Vector2.h"
 
 class Vector2Int
 {
@@ -19,7 +19,7 @@ public:
 public:
 	Vector2Int(int x = 0, int y = 0);
 
-	explicit operator SDL_Point() const;
+	operator Vector2() const;
 	Vector2Int& operator+=(const Vector2Int& rhs);
 	Vector2Int& operator-=(const Vector2Int& rhs);
 	Vector2Int& operator*=(const Vector2Int& rhs);

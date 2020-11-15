@@ -47,8 +47,3 @@ bool RectInt::ContainsPoint(Vector2Int point)
 
 	return true;
 }
-
-RectInt::operator SDL_Rect() const
-{
-	return { GetX(), GetY(), GetWidth(), GetHeight() };
-}

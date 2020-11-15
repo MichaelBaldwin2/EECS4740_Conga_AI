@@ -1,3 +1,4 @@
+#include "Vector2.h"
 #include "Vector2Int.h"
 
 const Vector2Int Vector2Int::Zero = Vector2Int(0, 0);
@@ -9,9 +10,9 @@ const Vector2Int Vector2Int::Right = Vector2Int(1, 0);
 
 Vector2Int::Vector2Int(const int x, const int y) : x(x), y(y) {}
 
-Vector2Int::operator SDL_Point() const
+Vector2Int::operator Vector2() const
 {
-	return { x, y };
+	return Vector2(static_cast<float>(x), static_cast<float>(y));
 }
 
 Vector2Int& Vector2Int::operator+=(const Vector2Int& rhs)

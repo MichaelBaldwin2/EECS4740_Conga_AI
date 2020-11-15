@@ -1,4 +1,5 @@
 #include "Color.h"
+#include <SDL.h>
 #include <algorithm>
 
 const Color Color::Clear = Color(0, 0, 0, 0);

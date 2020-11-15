@@ -1,7 +1,5 @@
 #pragma once
 
-#include <sdl.h>
-
 class Vector2
 {
 public:
@@ -18,7 +16,6 @@ public:
 
 public:
 	Vector2(float x = 0, float y = 0);
-	explicit operator SDL_Point() const;
 	Vector2& operator+=(const Vector2& rhs);
 	Vector2& operator-=(const Vector2& rhs);
 	Vector2& operator*=(const Vector2& rhs);

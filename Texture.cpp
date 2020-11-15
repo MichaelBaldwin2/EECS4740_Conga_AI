@@ -35,7 +35,7 @@ Texture::Texture(const Renderer renderer, const std::string filePath) : sdlTextu
 	SDL_FreeSurface(surface);
 }
 
-Texture::Texture(SDL_Texture* sdlTexture, std::string filePath, unsigned int width, unsigned int height) : sdlTexture(sdlTexture), filePath(filePath), width(width), height(height) {}
+Texture::Texture(SDL_Texture* sdlTexture, std::string filePath, int width, int height) : sdlTexture(sdlTexture), filePath(filePath), width(width), height(height) {}
 
 Texture::Texture(Renderer renderer, SDL_Surface* surface) : sdlTexture(nullptr), filePath(filePath), width(0), height(0)
 {
@@ -65,12 +65,12 @@ std::string Texture::GetFilePath() const
 	return filePath;
 }
 
-unsigned int Texture::GetWidth() const
+int Texture::GetWidth() const
 {
 	return width;
 }
 
-unsigned int Texture::GetHeight() const
+int Texture::GetHeight() const
 {
 	return height;
 }

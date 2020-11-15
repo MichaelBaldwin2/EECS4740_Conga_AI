@@ -15,6 +15,66 @@ Board::Board() : whiteStoneCounts(), blackStoneCounts()
 	}
 }
 
+int Board::GetStoneCount(const char* player, unsigned int x, unsigned int y)
+{
+	return GetStoneCount(std::string(player), x, y);
+}
+
+int Board::AddStones(const char* player, unsigned int x, unsigned int y, unsigned int count)
+{
+	return AddStones(std::string(player), x, y, count);
+}
+
+int Board::RemoveStones(const char* player, unsigned int x, unsigned int y)
+{
+	return RemoveStones(std::string(player), x, y);
+}
+
+bool Board::CheckInput(const char* player, int x, int y, int direction)
+{
+	return CheckInput(std::string(player), x, y, direction);
+}
+
+int Board::MoveStones(const char* player, unsigned int x, unsigned int y, unsigned int direction)
+{
+	return MoveStones(std::string(player), x, y, direction);
+}
+
+bool Board::CheckLoss(const char* player)
+{
+	return CheckLoss(std::string(player));
+}
+
+int Board::GetStoneCount(std::string player, unsigned int x, unsigned int y)
+{
+	return GetStoneCount(player.compare("White") == 0, x, y);
+}
+
+int Board::AddStones(std::string player, unsigned int x, unsigned int y, unsigned int count)
+{
+	return AddStones(player.compare("White") == 0, x, y, count);
+}
+
+int Board::RemoveStones(std::string player, unsigned int x, unsigned int y)
+{
+	return RemoveStones(player.compare("White") == 0, x, y);
+}
+
+bool Board::CheckInput(std::string player, int x, int y, int direction)
+{
+	return CheckInput(player.compare("White") == 0, x, y, direction);
+}
+
+int Board::MoveStones(std::string player, unsigned int x, unsigned int y, unsigned int direction)
+{
+	return MoveStones(player.compare("White") == 0, x, y, direction);
+}
+
+bool Board::CheckLoss(std::string player)
+{
+	return CheckLoss(player.compare("White") == 0);
+}
+
 int Board::GetStoneCount(bool white, unsigned int x, unsigned int y)
 {
 	if(CheckBounds(x, y))

@@ -2,7 +2,6 @@
 #pragma once
 
 #include "Vector2Int.h"
-#include <SDL.h>
 
 class RectInt
 {
@@ -19,6 +18,4 @@ public:
 	int GetWidth() const;
 	int GetHeight() const;
 	bool ContainsPoint(Vector2Int point);
-
-	explicit operator SDL_Rect() const;
 };

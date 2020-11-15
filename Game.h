@@ -29,9 +29,9 @@ private:
 	Agent* whitePlayer;
 	int updateFPS;
 	int renderFPS;
+	bool pauseSim;
 	int totalMoves;
 	float timeTaken;
-	bool pauseSim;
 	std::string onLossText;
 
 public:
