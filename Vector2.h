@@ -1,4 +1,4 @@
-/*
+/* Vector2.h
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  *
@@ -9,7 +9,7 @@
 #pragma once
 
 /// <summary>
-/// A 2 part floating point vecotr class
+/// A 2 part floating point vector class
 /// </summary>
 class Vector2
 {
