@@ -3,7 +3,15 @@
 #include <random>
 #include <iostream>
 
-Move RandomPlayer::GetMove(Board board, SDL_MouseButtonEvent& mb) {
+RandomPlayer::RandomPlayer()
+{
+	std::random_device rd;
+	random = std::mt19937(rd()); // seed the generator
+	//random = std::mt19937(0); // seed the generator
+}
+
+Move RandomPlayer::GetMove(Board board, SDL_MouseButtonEvent& mb)
+{
 	bool validMove = false;
 	const int directions[] = {
 		85,		// Up
@@ -16,17 +24,15 @@ Move RandomPlayer::GetMove(Board board, SDL_MouseButtonEvent& mb) {
 		152		// Southeast
 	};
 
+	auto coordDistr = std::uniform_int_distribution<>(0, 3);
+	auto dirDistr = std::uniform_int_distribution <>(0, 7);
 	Move move = Move();
-	std::random_device rd;
-	std::mt19937 gen(rd()); // seed the generator
-	//std::mt19937 gen(0); // seed the generator
-	std::uniform_int_distribution<> coordDistr(0, 3);
-	std::uniform_int_distribution<> dirDistr(0, 7);
 
-	while (!validMove) {
-		move.x = coordDistr(gen);
-		move.y = coordDistr(gen);
-		move.direction = directions[dirDistr(gen)];
+	while(!validMove)
+	{
+		move.x = coordDistr(random);
+		move.y = coordDistr(random);
+		move.direction = directions[dirDistr(random)];
 
 		validMove = board.CheckInput(
 			name,
@@ -35,6 +41,6 @@ Move RandomPlayer::GetMove(Board board, SDL_MouseButtonEvent& mb) {
 			move.direction
 		);
 	}
-    
+
 	return move;
 }

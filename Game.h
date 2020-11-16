@@ -34,6 +34,9 @@ private:
 	bool pauseSim;
 	int totalMoves;
 	float timeTaken;
+	float timeTakenAvg;
+	float timeTakenCount;
+	float timeTakenTotal;
 	std::string onLossText;
 
 public:

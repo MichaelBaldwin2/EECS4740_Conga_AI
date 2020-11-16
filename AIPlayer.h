@@ -16,6 +16,9 @@ public:
 	BoardState Minimax(BoardState state, int depth, int alpha, int beta, bool player);
 	int GetEvalValue1(Board board);
 	int GetEvalValue2(Board board);
+	int GetEvalValue3(Board board);
+	int GetEvalValue4(Board board);
+	int GetEvalValue5(Board board);
 	std::vector<Move> GetMoves(std::string player, Board board);
 	int GetTotalDepth();
 	int GetExploredNodes();

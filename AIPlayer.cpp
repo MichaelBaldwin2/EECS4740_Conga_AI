@@ -5,7 +5,7 @@
 Move AIPlayer::GetMove(Board board, SDL_MouseButtonEvent& mb)
 {
 	Move move = Move();
-	move = Minimax({ board, {3, 3, -1}, 0 }, 3, -10000, 10000, true).move;
+	move = Minimax({ board, {0, 0, -1}, 0 }, 3, -10000, 10000, true).move;
 	totalDepth += 3;
 	return move;
 }
@@ -15,7 +15,7 @@ BoardState AIPlayer::Minimax(BoardState state, int depth, int alpha, int beta, b
 	if(depth == 0 || state.board.CheckLoss("White") || state.board.CheckLoss("Black"))
 	{
 		exploredNodes++;
-		state.evalValue = GetEvalValue2(state.board);
+		state.evalValue = GetEvalValue5(state.board);
 		return state;
 	}
 
@@ -95,9 +95,41 @@ int AIPlayer::GetEvalValue2(Board board)
 	}
 
 	return evalValue;
+}//*/
+
+int AIPlayer::GetEvalValue3(Board board)
+{
+	auto blackCellCount = 0;
+	auto whiteCellCount = 0;
+
+	for(auto y = 0; y < 4; y++)
+	{
+		for(auto x = 0; x < 4; x++)
+		{
+			blackCellCount += board.GetStoneCount("Black", x, y) > 0 ? 1 : 0;
+			whiteCellCount += board.GetStoneCount("White", x, y) > 0 ? 1 : 0;
+		}
+	}
+
+	return blackCellCount - whiteCellCount;
 }
 
-std::vector<Move> AIPlayer::GetMoves(std::string player, Board board)
+int AIPlayer::GetEvalValue4(Board board)
+{
+	/*
+	* AI Player wants to maximize the number of opponent cells that are adjacent to itself (AI Player) or the wall.
+	*/
+
+	return 0;
+}
+
+int AIPlayer::GetEvalValue5(Board board)
+{
+	auto opponentName = name == "White" ? "Black" : "White";
+	return 128 - GetMoves(opponentName, board).size();
+}
+
+std::vector<Move> AIPlayer::GetMoves(std::string playerName, Board board)
 {
 	std::vector<Move> possibleMoves;
 	const int directions[] = {
@@ -115,7 +147,7 @@ std::vector<Move> AIPlayer::GetMoves(std::string player, Board board)
 	{
 		for(auto x = 0; x < 4; x++)
 		{
-			auto count = board.GetStoneCount(player, x, y);
+			auto count = board.GetStoneCount(playerName, x, y);
 			if(count <= 0)
 			{
 				continue;
@@ -124,7 +156,7 @@ std::vector<Move> AIPlayer::GetMoves(std::string player, Board board)
 			{
 				for(auto i = 0; i < 8; i++)
 				{
-					if(board.CheckInput(player, x, y, directions[i]) == true)
+					if(board.CheckInput(playerName, x, y, directions[i]) == true)
 					{
 						possibleMoves.push_back({ x, y, directions[i] });
 					}
