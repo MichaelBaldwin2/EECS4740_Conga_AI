@@ -79,7 +79,6 @@ int Board::GetStoneCount(bool white, unsigned int x, unsigned int y)
 {
 	if(CheckBounds(x, y))
 	{
-		//std::cout << "GetStoneCount(): Grid location is out of bounds" << std::endl;
 		return -1;
 	}
 
@@ -90,7 +89,6 @@ int Board::AddStones(bool white, unsigned int x, unsigned int y, unsigned int co
 {
 	if(CheckBounds(x, y))
 	{
-		//std::cout << "AddStones(): Grid location is out of bounds" << std::endl;
 		return -1;
 	}
 
@@ -102,7 +100,6 @@ int Board::RemoveStones(bool white, unsigned int x, unsigned int y)
 {
 	if(CheckBounds(x, y))
 	{
-		//std::cout << "RemoveStones(): Grid location is out of bounds" << std::endl;
 		return -1;
 	}
 
@@ -115,7 +112,6 @@ void Board::PrintBoardToConsole()
 {
 	for(auto y = 0; y < 4; y++)
 	{
-		//auto stringBuilder = std::stringstream();
 		std::cout << "|";
 		for(auto x = 0; x < 4; x++)
 		{
@@ -149,8 +145,6 @@ void Board::PrintBoardToConsole()
 				std::cout << blackCount;
 			}
 			std::cout << " |";
-
-			//std::cout << "| " << (whiteCount < 10 ? "0" : "") << whiteCount << "-" << (blackCount < 10 ? "0" : "") << blackCount << " |";
 		}
 		std::cout << "|" << std::endl;
 	}
@@ -187,7 +181,6 @@ bool Board::CheckInput(bool white, int x, int y, int direction)
 	}
 	if(std::find(std::begin(validDirections), std::end(validDirections), direction) == std::end(validDirections))
 	{
-		// TODO This is a shit solution
 		if(direction != -1)
 		{
 			std::cout << "ERROR: Please enter a valid direction." << std::endl;

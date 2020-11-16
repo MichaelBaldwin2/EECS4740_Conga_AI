@@ -21,7 +21,8 @@
 
 Agent* player;
 
-Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), textures(), arialFontNormal(), pauseButton(), playButton(), stepButton(), resetButton(), blackPlayer(new AIPlayer()), whitePlayer(new RandomPlayer()), updateFPS(0), renderFPS(0), pauseSim(true), totalMoves(0), timeTaken(0), timeTakenAvg(0), timeTakenCount(0), timeTakenTotal(0), onLossText() {}
+Game::Game() : board(), isRunning(true), window(), renderer(), spriteBatch(), textures(), arialFontNormal(), pauseButton(), playButton(), stepButton(), resetButton(), 
+	blackPlayer(new AIPlayer()), whitePlayer(new RandomPlayer()), updateFPS(0), renderFPS(0), pauseSim(true), totalMoves(0), timeTaken(0), timeTakenAvg(0), timeTakenCount(0), timeTakenTotal(0), onLossText() {}
 
 Game::~Game()
 {
