@@ -19,6 +19,9 @@
 #include <map>
 #include <string>
 
+/// <summary>
+/// Main game class. Runs the loop and all required information for the game to run.
+/// </summary>
 class Game
 {
 private:
@@ -48,10 +51,30 @@ private:
 	std::string onLossText;
 
 public:
+	/// <summary>
+	/// Constructor
+	/// </summary>
 	Game();
+	/// <summary>
+	/// Explicit destructor so that we can release gpu held resources before subsystem shutdown
+	/// </summary>
 	~Game();
+	/// <summary>
+	/// Loads all textures, fonts, the game board, and the players
+	/// </summary>
 	bool Init();
+	/// <summary>
+	/// Main loop
+	/// </summary>
 	void Loop();
+	/// <summary>
+	/// Logic update loop
+	/// </summary>
+	/// <param name="deltaTime">Amount of time in seconds that have passed since this function was called last</param>
 	void UpdateTick(float deltaTime);
+	/// <summary>
+	/// Render update loop
+	/// </summary>
+	/// <param name="deltaTime">Amount of time in seconds that have passed since this function was called last</param>
 	void RenderTick(float deltaTime);
 };

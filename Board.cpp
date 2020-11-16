@@ -7,6 +7,7 @@
  */
 
 #include "Board.h"
+#include "Move.h"
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -53,6 +54,11 @@ bool Board::CheckLoss(const char* player)
 	return CheckLoss(std::string(player));
 }
 
+std::vector<Move> Board::GetMoves(const char* player)
+{
+	return GetMoves(std::string(player));
+}
+
 int Board::GetStoneCount(std::string player, unsigned int x, unsigned int y)
 {
 	return GetStoneCount(player.compare("White") == 0, x, y);
@@ -81,6 +87,45 @@ int Board::MoveStones(std::string player, unsigned int x, unsigned int y, unsign
 bool Board::CheckLoss(std::string player)
 {
 	return CheckLoss(player.compare("White") == 0);
+}
+
+std::vector<Move> Board::GetMoves(std::string player)
+{
+	std::vector<Move> possibleMoves;
+	const int directions[] = {
+		85,		// Up
+		68,		// Down
+		76,		// Left
+		82,		// Right
+		165,	// Northwest
+		147,	// Northeast
+		170,	// Southwest
+		152		// Southeast
+	};
+
+	for(auto y = 0; y < 4; y++)
+	{
+		for(auto x = 0; x < 4; x++)
+		{
+			auto count = GetStoneCount(player, x, y);
+			if(count <= 0)
+			{
+				continue;
+			}
+			else
+			{
+				for(auto i = 0; i < 8; i++)
+				{
+					if(CheckInput(player, x, y, directions[i]) == true)
+					{
+						possibleMoves.push_back({ x, y, directions[i] });
+					}
+				}
+			}
+		}
+	}
+
+	return possibleMoves;
 }
 
 int Board::GetStoneCount(bool white, unsigned int x, unsigned int y)
@@ -429,6 +474,11 @@ bool Board::CheckLoss(bool white)
 	}
 
 	return true;
+}
+
+std::vector<Move> Board::GetMoves(bool white)
+{
+	return GetMoves(white ? "White" : "Black");
 }
 
 bool Board::operator==(Board board)

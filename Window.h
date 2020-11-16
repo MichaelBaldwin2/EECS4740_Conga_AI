@@ -11,6 +11,9 @@
 #include <SDL.h>
 #include <string>
 
+/// <summary>
+/// Wrapper for SDL_Window
+/// </summary>
 class Window
 {
 private:

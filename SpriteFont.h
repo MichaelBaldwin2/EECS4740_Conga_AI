@@ -12,6 +12,9 @@
 #include "Texture.h"
 #include <vector>
 
+/// <summary>
+/// A class used to render text to the screen. Doesn't look good.
+/// </summary>
 class SpriteFont
 {
 private:

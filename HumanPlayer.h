@@ -11,12 +11,18 @@
 #include "Agent.h"
 #include "Vector2Int.h"
 
+/// <summary>
+/// Human playable agent. Uses the mouse to point and click moves.
+/// </summary>
 class HumanPlayer : public Agent
 {
 private:
 	Vector2Int selectedCell;
 
 public:
+	/// <summary>
+	/// Constructor
+	/// </summary>
 	HumanPlayer();
 	Move GetMove(Board board, SDL_MouseButtonEvent& mb);
 };

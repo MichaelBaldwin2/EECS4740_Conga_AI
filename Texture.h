@@ -14,6 +14,9 @@
 #include <SDL.h>
 #include <string>
 
+/// <summary>
+/// Wrapper for SDL_Texture
+/// </summary>
 class Texture
 {
 private:

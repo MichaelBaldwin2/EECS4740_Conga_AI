@@ -13,11 +13,23 @@
 #include <SDL.h>
 #include <string>
 
+/// <summary>
+/// Abstract base class for all playable agents in game (HumanPlayer, RandomPlayer, and AIPlayer)
+/// </summary>
 class Agent
 {
 public:
+	/// <summary>
+	/// The name of the player (White or Black)
+	/// </summary>
 	std::string name;
 
 public:
+	/// <summary>
+	/// Called when a move is requested from the agent, specifications left up to the agent.
+	/// </summary>
+	/// <param name="board">The board that the move will be used on</param>
+	/// <param name="mb">An SDL_MouseButtonEvent structure (only used with HumanPlayer)</param>
+	/// <returns>A filled Move structure</returns>
 	virtual Move GetMove(Board board, SDL_MouseButtonEvent &mb) = 0;
 };

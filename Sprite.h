@@ -12,6 +12,9 @@
 #include "Texture.h"
 #include <string>
 
+/// <summary>
+/// Represents a drawable part (or full) of a Texture
+/// </summary>
 class Sprite
 {
 private:

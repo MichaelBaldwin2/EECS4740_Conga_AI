@@ -8,6 +8,9 @@
 
 #pragma once
 
+/// <summary>
+/// Utility class for tracking high accurate time differentials
+/// </summary>
 class Time
 {
 private:

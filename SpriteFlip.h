@@ -10,6 +10,9 @@
 
 #include <SDL.h>
 
+/// <summary>
+/// Wrapper for SDL flip enum
+/// </summary>
 enum class SpriteFlip : int
 {
 	None = SDL_FLIP_NONE,

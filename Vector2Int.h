@@ -10,6 +10,9 @@
 
 #include "Vector2.h"
 
+/// <summary>
+/// A 2 part integer vector class
+/// </summary>
 class Vector2Int
 {
 public:

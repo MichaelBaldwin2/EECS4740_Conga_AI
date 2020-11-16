@@ -11,6 +11,12 @@
 #include "Board.h"
 #include "Move.h"
 
+/// <summary>
+/// Represents a current state of a board.
+/// Contains a Board instance (very very small at 256 bytes)
+/// A Move structure (basically what the move on this board was)
+/// An evaluation value
+/// </summary>
 struct BoardState
 {
 	Board board;

@@ -15,6 +15,9 @@
 bool Init();
 void Shutdown();
 
+/// <summary>
+/// Program entry point
+/// </summary>
 int main(int argc, char* args[])
 {
 	if(!Init())
@@ -38,6 +41,9 @@ int main(int argc, char* args[])
 	return 0;
 }
 
+/// <summary>
+/// Initializes all the subsystems
+/// </summary>
 bool Init()
 {
 	spdlog::info("Initializing...");
@@ -69,6 +75,9 @@ bool Init()
 	return true;
 }
 
+/// <summary>
+/// Shuts down and releases subsystems
+/// </summary>
 void Shutdown()
 {
 	spdlog::info("Shutting down...");

@@ -8,6 +8,10 @@
 
 #pragma once
 
+/// <summary>
+/// Represents a possible move on the Conga board.
+/// Has an x and y (cell location) and a movement direction (0-7 inclusive)
+/// </summary>
 struct Move
 {
 	int x, y;

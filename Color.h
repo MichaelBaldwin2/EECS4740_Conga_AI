@@ -10,6 +10,9 @@
 
 #include <SDL.h>
 
+/// <summary>
+/// Represents a 4-part color
+/// </summary>
 class Color
 {
 public:

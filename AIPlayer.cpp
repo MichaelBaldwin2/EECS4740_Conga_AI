@@ -20,6 +20,7 @@ Move AIPlayer::GetMove(Board board, SDL_MouseButtonEvent& mb)
 
 BoardState AIPlayer::Minimax(BoardState state, int depth, int alpha, int beta, bool isMax)
 {
+	// If we have either reached a leaf node or one of the players has lost on this board state, then calculate the static evaluation
 	if(depth == 0 || state.board.CheckLoss("White") || state.board.CheckLoss("Black"))
 	{
 		exploredNodes++;
@@ -27,10 +28,18 @@ BoardState AIPlayer::Minimax(BoardState state, int depth, int alpha, int beta, b
 		return state;
 	}
 
+	// Is it maxes turn?
 	if(isMax)
 	{
+		/*
+		* Create a new board state
+		* Get a list of possible moves max can make on this state
+		* simulate the moves for each state, calling minimax recursivly for each move
+		* If the proposed move results in a more favorable outcome, then return it
+		* Prune branches where it will be impossible to achieve better results
+		*/
 		auto maxEval = BoardState{ state.board, state.move, -10000 };
-		auto moves = GetMoves(name, state.board);
+		auto moves = state.board.GetMoves(name);
 		for(auto i = 0; i < moves.size(); i++)
 		{
 			auto boardWithMove = state.board;
@@ -51,10 +60,17 @@ BoardState AIPlayer::Minimax(BoardState state, int depth, int alpha, int beta, b
 		}
 		return maxEval;
 	}
-	else
+	else // If it is mins turn
 	{
+		/*
+		* Create a new board state
+		* Get a list of possible moves min can make on this state
+		* simulate the moves for each state, calling minimax recursivly for each move
+		* If the proposed move results in a more favorable outcome, then return it
+		* Prune branches where it will be impossible to achieve better results
+		*/
 		auto minEval = BoardState{ state.board, state.move, 10000 };
-		auto moves = GetMoves(name == "White" ? "Black" : "White", state.board);
+		auto moves = state.board.GetMoves(name == "White" ? "Black" : "White");
 		for(auto i = 0; i < moves.size(); i++)
 		{
 			auto boardWithMove = state.board;
@@ -80,14 +96,14 @@ BoardState AIPlayer::Minimax(BoardState state, int depth, int alpha, int beta, b
 int AIPlayer::GetEvalValue1(Board board)
 {
 	// # max moves - # min moves
-	return static_cast<int>(GetMoves(name, board).size() - GetMoves(name == "White" ? "Black" : "White", board).size());
+	return static_cast<int>(board.GetMoves(name).size() - board.GetMoves(name == "White" ? "Black" : "White").size());
 }
 
 int AIPlayer::GetEvalValue2(Board board)
 {
 	// # player spaces to move to - # opponent spaces to move to
-	auto playerMoves = GetMoves(name, board);
-	auto opponentMoves = GetMoves(name == "White" ? "Black" : "White", board);
+	auto playerMoves = board.GetMoves(name);
+	auto opponentMoves = board.GetMoves(name == "White" ? "Black" : "White");
 	auto evalValue = 0;
 
 	for(int i = 0; i < playerMoves.size(); i++)
@@ -134,46 +150,7 @@ int AIPlayer::GetEvalValue4(Board board)
 int AIPlayer::GetEvalValue5(Board board)
 {
 	auto opponentName = name == "White" ? "Black" : "White";
-	return 128 - GetMoves(opponentName, board).size();
-}
-
-std::vector<Move> AIPlayer::GetMoves(std::string playerName, Board board)
-{
-	std::vector<Move> possibleMoves;
-	const int directions[] = {
-		85,		// Up
-		68,		// Down
-		76,		// Left
-		82,		// Right
-		165,	// Northwest
-		147,	// Northeast
-		170,	// Southwest
-		152		// Southeast
-	};
-
-	for(auto y = 0; y < 4; y++)
-	{
-		for(auto x = 0; x < 4; x++)
-		{
-			auto count = board.GetStoneCount(playerName, x, y);
-			if(count <= 0)
-			{
-				continue;
-			}
-			else
-			{
-				for(auto i = 0; i < 8; i++)
-				{
-					if(board.CheckInput(playerName, x, y, directions[i]) == true)
-					{
-						possibleMoves.push_back({ x, y, directions[i] });
-					}
-				}
-			}
-		}
-	}
-
-	return possibleMoves;
+	return 128 - static_cast<int>(board.GetMoves(opponentName).size());
 }
 
 int AIPlayer::GetTotalDepth()

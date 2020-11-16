@@ -11,6 +11,9 @@
 #include <SDL_ttf.h>
 #include <string>
 
+/// <summary>
+/// Wrapper for SDL TTF_Font
+/// </summary>
 class TTFFont
 {
 private:

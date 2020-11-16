@@ -12,6 +12,9 @@
 #include "Sprite.h"
 #include "SpriteBatch.h"
 
+/// <summary>
+/// Helper class representing a GUI button
+/// </summary>
 class Button
 {
 private:

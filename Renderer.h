@@ -12,6 +12,9 @@
 #include "Window.h"
 #include <SDL.h>
 
+/// <summary>
+/// Wrapper for the SDL renderer
+/// </summary>
 class Renderer
 {
 private:

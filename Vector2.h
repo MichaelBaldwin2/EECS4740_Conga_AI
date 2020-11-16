@@ -8,6 +8,9 @@
 
 #pragma once
 
+/// <summary>
+/// A 2 part floating point vecotr class
+/// </summary>
 class Vector2
 {
 public:

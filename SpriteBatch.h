@@ -17,6 +17,9 @@
 #include "Vector2.h"
 #include <vector>
 
+/// <summary>
+/// Helper structure to hold information about how to draw a sprite
+/// </summary>
 struct SpriteInfo
 {
 	Sprite sprite;
@@ -29,6 +32,9 @@ struct SpriteInfo
 	float depth;
 };
 
+/// <summary>
+/// Fast sprite rendering, uses depth sorting and attempts to minimize texture switching on the gpu
+/// </summary>
 class SpriteBatch
 {
 public:

@@ -10,6 +10,9 @@
 
 #include "Vector2.h"
 
+/// <summary>
+/// A floating point rectangle class
+/// </summary>
 class Rect
 {
 private:

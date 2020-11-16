@@ -11,6 +11,9 @@
 
 #include "Vector2Int.h"
 
+/// <summary>
+/// A integer rectangle class
+/// </summary>
 class RectInt
 {
 private:
