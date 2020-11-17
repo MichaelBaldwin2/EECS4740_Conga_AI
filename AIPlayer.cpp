@@ -24,7 +24,7 @@ BoardState AIPlayer::Minimax(BoardState state, int depth, int alpha, int beta, b
 	if(depth == 0 || state.board.CheckLoss("White") || state.board.CheckLoss("Black"))
 	{
 		exploredNodes++;
-		state.evalValue = GetEvalValue5(state.board);
+		state.evalValue = GetEvalValue4(state.board);
 		return state;
 	}
 
@@ -119,7 +119,7 @@ int AIPlayer::GetEvalValue2(Board board)
 	}
 
 	return evalValue;
-}//*/
+}
 
 int AIPlayer::GetEvalValue3(Board board)
 {
@@ -139,15 +139,6 @@ int AIPlayer::GetEvalValue3(Board board)
 }
 
 int AIPlayer::GetEvalValue4(Board board)
-{
-	/*
-	* AI Player wants to maximize the number of opponent cells that are adjacent to itself (AI Player) or the wall.
-	*/
-
-	return 0;
-}
-
-int AIPlayer::GetEvalValue5(Board board)
 {
 	auto opponentName = name == "White" ? "Black" : "White";
 	return 128 - static_cast<int>(board.GetMoves(opponentName).size());

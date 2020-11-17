@@ -48,14 +48,9 @@ public:
 	int GetEvalValue3(Board board);
 	/// <summary>
 	/// Evaluation function
-	/// AI Player wants to maximize the number of opponent cells that are adjacent to itself (AI Player) or the wall
-	/// </summary>
-	int GetEvalValue4(Board board);
-	/// <summary>
-	/// Evaluation function
 	/// # of moves that the opponent has
 	/// </summary>
-	int GetEvalValue5(Board board);
+	int GetEvalValue4(Board board);
 	int GetTotalDepth();
 	int GetExploredNodes();
 	int GetPrunedNodes();
